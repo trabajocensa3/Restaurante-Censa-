@@ -1,0 +1,131 @@
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso - Restaurante Censa</title>
+    <style>
+        body { font-family: sans-serif; background-color: #1e1e1e; color: #333; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .container { display: flex; gap: 30px; max-width: 800px; width: 100%; }
+        .card { background-color: #ffffff; padding: 30px; border-radius: 10px; flex: 1; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        h2 { color: #10b981; margin-top: 0; text-align: center; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #10b981; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        button:hover { background-color: #059669; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Iniciar Sesión -->
+        <div class="card">
+            <h2>Iniciar Sesión</h2>
+            <form id="login-form" onsubmit="return false;">
+                <div class="form-group">
+                    <label>Correo</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="button" id="btn-login">Entrar</button>
+            </form>
+        </div>
+
+        <!-- Registrarse -->
+        <div class="card">
+            <h2>Registrarse</h2>
+            <form id="register-form" onsubmit="return false;">
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text" id="register-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Correo</label>
+                    <input type="email" id="register-email" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="register-password" required>
+                </div>
+                <button type="button" id="btn-register">Crear cuenta</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Importar Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // Esto asegura que el código espere a que la página cargue por completo
+        window.addEventListener('DOMContentLoaded', () => {
+            
+            // Verificamos si el navegador bloqueó la librería
+            if (typeof window.supabase === 'undefined') {
+                alert("🚨 ALERTA CRÍTICA: Tu navegador o un bloqueador de publicidad está bloqueando el script de Supabase. Desactiva el bloqueador para esta pestaña.");
+                return;
+            }
+
+            const supabaseUrl = 'https://xapucgyfhswgudkraeuz.supabase.co'; 
+            const supabaseKey = 'sb_publishable_tL2gtRtP68PEu0A86Qg2_Q_EeysDviw'; 
+            const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+            // --- REGISTRO ---
+            document.getElementById('btn-register').addEventListener('click', async () => {
+                try {
+                    const nombre = document.getElementById('register-name').value;
+                    const email = document.getElementById('register-email').value;
+                    const password = document.getElementById('register-password').value;
+
+                    if (!email || !password || !nombre) {
+                        alert('⚠️ Llena todos los campos de registro.');
+                        return;
+                    }
+
+                    alert('⏳ Conectando con Supabase...');
+
+                    const { data: authData, error: authError } = await supabase.auth.signUp({
+                        email: email,
+                        password: password,
+                    });
+
+                    if (authError) throw authError;
+
+                    const { error: dbError } = await supabase
+                        .from('usuarios')
+                        .insert([{ 
+                            id: authData.user.id, 
+                            nombre: nombre, 
+                            email: email, 
+                            rol: 'cliente' 
+                        }]);
+
+                    if (dbError) throw dbError;
+
+                    alert('🎉 ¡REGISTRO EXITOSO! Ya puedes iniciar sesión.');
+                } catch (err) {
+                    alert('❌ ERROR: ' + err.message);
+                }
+            });
+
+            // --- LOGIN ---
+            document.getElementById('btn-login').addEventListener('click', async () => {
+                try {
+                    const email = document.getElementById('login-email').value;
+                    const password = document.getElementById('login-password').value;
+
+                    const { error } = await supabase.auth.signInWithPassword({ email, password });
+                    if (error) throw error;
+
+                    alert('✅ ¡Ingreso exitoso!');
+                    window.location.href = 'index.html';
+                } catch (err) {
+                    alert('❌ ERROR AL ENTRAR: ' + err.message);
+                }
+            });
+        });
+    </script>
+</body>
+                      </html>
