@@ -1,9 +1,11 @@
 
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio - Restaurante Censa</title>
+    <title>Restaurante Censa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
@@ -12,137 +14,238 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1e1e1e;
-            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+            color: #f5f0e8;
             min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.06) 0%, transparent 50%),
+                              radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
         }
 
         header {
-            background-color: #252525;
-            padding: 20px 50px;
+            position: relative;
+            z-index: 2;
+            padding: 25px 60px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
             flex-wrap: wrap;
             gap: 15px;
+            background: rgba(15, 15, 15, 0.6);
+            backdrop-filter: blur(10px);
         }
 
         .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #10b981;
-        }
-
-        .nav-buttons {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #d4af37;
+            letter-spacing: 2px;
             display: flex;
-            gap: 15px;
             align-items: center;
+            gap: 10px;
         }
 
-        .nav-buttons a {
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: 0.3s;
-            white-space: nowrap;
+        .logo span {
+            color: #f5f0e8;
+            font-weight: 400;
+            font-style: italic;
         }
 
-        .btn-login {
-            color: #10b981;
-            border: 2px solid #10b981;
+        .nav-info {
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #b8b0a0;
         }
 
-        .btn-login:hover {
-            background-color: rgba(16, 185, 129, 0.1);
-        }
-
-        .btn-register {
-            background-color: #10b981;
-            color: white;
-            border: 2px solid #10b981;
-        }
-
-        .btn-register:hover {
-            background-color: #059669;
-            border-color: #059669;
-        }
 
         .hero {
+            position: relative;
+            z-index: 2;
             text-align: center;
-            padding: 100px 20px;
-            margin-top: 50px;
+            padding: 120px 20px 100px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero::before {
+            content: '✦';
+            display: block;
+            color: #d4af37;
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            letter-spacing: 15px;
         }
 
         .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
-            line-height: 1.2;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 4.5rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            line-height: 1.1;
+            color: #f5f0e8;
+            letter-spacing: 1px;
+        }
+
+        .hero h1 em {
+            color: #d4af37;
+            font-style: italic;
         }
 
         .hero p {
-            font-size: 1.2rem;
-            color: #aaaaaa;
+            font-size: 1.1rem;
+            color: #b8b0a0;
+            font-weight: 300;
+            letter-spacing: 2px;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.8;
         }
 
-        /* ===== RESPONSIVE ===== */
+        .divider {
+            width: 80px;
+            height: 1px;
+            background: #d4af37;
+            margin: 35px auto;
+            position: relative;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            width: 5px;
+            height: 5px;
+            background: #d4af37;
+            border-radius: 50%;
+        }
+
+        .divider::before { left: -10px; }
+        .divider::after { right: -10px; }
+
+        .hero-buttons {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+
+        .hero-buttons a {
+            position: relative;
+            text-decoration: none;
+            padding: 20px 55px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            transition: all 0.4s ease;
+            overflow: hidden;
+            border-radius: 2px;
+            min-width: 220px;
+        }
+
+        .hero-buttons a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .hero-buttons a:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #d4af37 0%, #f5d76e 50%, #d4af37 100%);
+            color: #0f0f0f;
+            border: 2px solid #d4af37;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 45px rgba(212, 175, 55, 0.6);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #d4af37;
+            border: 2px solid #d4af37;
+        }
+
+        .btn-secondary:hover {
+            background: #d4af37;
+            color: #0f0f0f;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 45px rgba(212, 175, 55, 0.5);
+        }
+
         @media (max-width: 768px) {
             header {
-                padding: 15px 20px;
+                padding: 20px 25px;
                 flex-direction: column;
-                justify-content: center;
                 text-align: center;
             }
 
-            .logo {
-                font-size: 1.3rem;
-            }
-
-            .nav-buttons {
-                width: 100%;
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-
-            .nav-buttons a {
-                padding: 8px 16px;
-                font-size: 0.9rem;
-            }
+            .logo { font-size: 1.4rem; }
+            .nav-info { font-size: 0.7rem; }
 
             .hero {
-                padding: 60px 20px;
-                margin-top: 20px;
+                padding: 70px 20px 60px;
             }
 
             .hero h1 {
-                font-size: 2rem;
+                font-size: 2.5rem;
             }
 
             .hero p {
-                font-size: 1rem;
+                font-size: 0.9rem;
+                letter-spacing: 1px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                gap: 18px;
+                margin-top: 40px;
+            }
+
+            .hero-buttons a {
+                width: 100%;
+                max-width: 320px;
+                padding: 18px 30px;
+                font-size: 0.8rem;
+                letter-spacing: 2px;
             }
         }
 
         @media (max-width: 400px) {
-            .nav-buttons {
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .nav-buttons a {
-                width: 100%;
-                text-align: center;
-                margin: 0;
-            }
-
             .hero h1 {
-                font-size: 1.6rem;
+                font-size: 2rem;
             }
 
-            .hero p {
-                font-size: 0.9rem;
+            .hero-buttons a {
+                padding: 16px 20px;
+                font-size: 0.75rem;
             }
         }
     </style>
@@ -150,16 +253,18 @@
 <body>
 
     <header>
-        <div class="logo">🍽️ Restaurante Censa</div>
-        <div class="nav-buttons">
-            <a href="login.html" class="btn-login">Iniciar Sesión</a>
-            <a href="login.html" class="btn-register">Registrarse</a>
-        </div>
+        <div class="logo">✦ Censa <span>Restaurante</span></div>
     </header>
 
     <section class="hero">
-        <h1>Bienvenido a Restaurante Censa</h1>
-        <p>El mejor sistema para gestionar tus reservas, comandas y menú.</p>
+        <h1>Bienvenido a <em>Censa</em></h1>
+        <div class="divider"></div>
+        <p>Una experiencia gastronómica donde cada detalle cuenta. Reserva tu mesa y déjate consentir.</p>
+
+        <div class="hero-buttons">
+            <a href="login.html" class="btn-primary">Iniciar Sesión</a>
+            <a href="login.html" class="btn-secondary">Registrarse</a>
+        </div>
     </section>
 
 </body>
