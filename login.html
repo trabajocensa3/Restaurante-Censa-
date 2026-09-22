@@ -1,21 +1,251 @@
+ <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acceso - Restaurante Censa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        body { font-family: sans-serif; background-color: #1e1e1e; color: #333; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .container { display: flex; gap: 30px; max-width: 800px; width: 100%; }
-        .card { background-color: #ffffff; padding: 30px; border-radius: 10px; flex: 1; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        h2 { color: #10b981; margin-top: 0; text-align: center; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background-color: #10b981; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        button:hover { background-color: #059669; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+            color: #f5f0e8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 30px 20px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.06) 0%, transparent 50%),
+                              radial-gradient(circle at 80% 70%, rgba(212, 175, 55, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            gap: 30px;
+            max-width: 850px;
+            width: 100%;
+        }
+
+        .card {
+            background: rgba(30, 30, 30, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 40px 35px;
+            border-radius: 4px;
+            flex: 1;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(212, 175, 55, 0.1);
+            transition: border-color 0.4s ease;
+        }
+
+        .card:hover { border-color: rgba(212, 175, 55, 0.6); }
+
+        h2 {
+            font-family: 'Cormorant Garamond', serif;
+            color: #d4af37;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 1px;
+            background: #d4af37;
+        }
+
+        .form-group { margin-bottom: 20px; }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #b8b0a0;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            background: rgba(15, 15, 15, 0.6);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            border-radius: 2px;
+            color: #f5f0e8;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #d4af37;
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.15);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #d4af37;
+            color: #0f0f0f;
+            border: 1px solid #d4af37;
+            border-radius: 2px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 15px;
+            transition: all 0.4s ease;
+        }
+
+        button:hover {
+            background: transparent;
+            color: #d4af37;
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.3);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-back {
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            color: #d4af37;
+            text-decoration: none;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 10px 18px;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 2px;
+            transition: all 0.4s ease;
+            z-index: 100;
+            background: rgba(15, 15, 15, 0.6);
+            backdrop-filter: blur(5px);
+        }
+
+        .btn-back:hover { background: #d4af37; color: #0f0f0f; }
+
+        /* ===== NOTIFICACIONES ELEGANTES ===== */
+        #notificacion {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            pointer-events: none;
+            max-width: calc(100% - 60px);
+        }
+
+        .toast {
+            background: rgba(30, 30, 30, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid #d4af37;
+            border-left: 3px solid #d4af37;
+            color: #f5f0e8;
+            padding: 18px 22px;
+            border-radius: 4px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(212, 175, 55, 0.15);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            line-height: 1.5;
+            min-width: 260px;
+            max-width: 380px;
+            animation: entrar 0.4s ease forwards;
+            pointer-events: auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .toast.saliendo { animation: salir 0.4s ease forwards; }
+
+        .toast .icono-toast {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        .toast .texto-toast { flex: 1; }
+
+        .toast .titulo-toast {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #d4af37;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .toast.error { border-color: #ff5555; border-left-color: #ff5555; }
+        .toast.error .titulo-toast { color: #ff8080; }
+
+        .toast.exito { border-color: #d4af37; border-left-color: #d4af37; }
+
+        .toast.info { border-color: #64b4ff; border-left-color: #64b4ff; }
+        .toast.info .titulo-toast { color: #64b4ff; }
+
+        @keyframes entrar {
+            from { opacity: 0; transform: translateX(60px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes salir {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(60px); }
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 80px 15px 30px; align-items: flex-start; }
+            .container { flex-direction: column; gap: 25px; }
+            .card { padding: 30px 25px; }
+            h2 { font-size: 1.6rem; }
+            .btn-back { top: 15px; left: 15px; padding: 8px 14px; font-size: 0.7rem; }
+
+            #notificacion {
+                top: 15px;
+                right: 15px;
+                left: 15px;
+                max-width: none;
+            }
+
+            .toast { font-size: 0.8rem; padding: 14px 18px; min-width: auto; }
+        }
     </style>
 </head>
 <body>
+
+    <a href="index.html" class="btn-back">← Volver</a>
 
     <div class="container">
         <!-- Iniciar Sesión -->
@@ -55,37 +285,64 @@
         </div>
     </div>
 
-    <!-- Importar Supabase -->
+    <!-- Contenedor de notificaciones -->
+    <div id="notificacion"></div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
-        // Esto asegura que el código espere a que la página cargue por completo
         window.addEventListener('DOMContentLoaded', () => {
-            
-            // Verificamos si el navegador bloqueó la librería
+
             if (typeof window.supabase === 'undefined') {
-                alert("🚨 ALERTA CRÍTICA: Tu navegador o un bloqueador de publicidad está bloqueando el script de Supabase. Desactiva el bloqueador para esta pestaña.");
+                mostrarToast('error', 'Error de conexión', 'Tu navegador está bloqueando la librería. Desactiva el bloqueador.');
                 return;
             }
 
-            const supabaseUrl = 'https://xapucgyfhswgudkraeuz.supabase.co'; 
-            const supabaseKey = 'sb_publishable_tL2gtRtP68PEu0A86Qg2_Q_EeysDviw'; 
+            const supabaseUrl = 'https://xapucgyfhswgudkraeuz.supabase.co';
+            const supabaseKey = 'sb_publishable_tL2gtRtP68PEu0A86Qg2_Q_EeysDviw';
             const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-            // --- REGISTRO ---
+            // ============ FUNCIÓN DE NOTIFICACIONES ============
+            function mostrarToast(tipo, titulo, mensaje, duracion = 4000) {
+                const contenedor = document.getElementById('notificacion');
+                const toast = document.createElement('div');
+                toast.className = `toast ${tipo}`;
+
+                const iconos = { exito: '✦', error: '✕', info: '◈' };
+
+                toast.innerHTML = `
+                    <div class="icono-toast">${iconos[tipo] || '✦'}</div>
+                    <div class="texto-toast">
+                        <span class="titulo-toast">${titulo}</span>
+                        ${mensaje}
+                    </div>
+                `;
+
+                contenedor.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.classList.add('saliendo');
+                    setTimeout(() => toast.remove(), 400);
+                }, duracion);
+            }
+
+            // ============ REGISTRO CON AUTO-LOGIN ============
             document.getElementById('btn-register').addEventListener('click', async () => {
+                const btn = document.getElementById('btn-register');
                 try {
-                    const nombre = document.getElementById('register-name').value;
-                    const email = document.getElementById('register-email').value;
+                    const nombre = document.getElementById('register-name').value.trim();
+                    const email = document.getElementById('register-email').value.trim();
                     const password = document.getElementById('register-password').value;
 
                     if (!email || !password || !nombre) {
-                        alert('⚠️ Llena todos los campos de registro.');
+                        mostrarToast('error', 'Campos incompletos', 'Por favor llena todos los campos.');
                         return;
                     }
 
-                    alert('⏳ Conectando con Supabase...');
+                    btn.disabled = true;
+                    btn.textContent = 'Creando cuenta...';
 
+                    // 1. Registrar en Auth
                     const { data: authData, error: authError } = await supabase.auth.signUp({
                         email: email,
                         password: password,
@@ -93,39 +350,101 @@
 
                     if (authError) throw authError;
 
+                    // 2. Insertar en tabla usuarios
                     const { error: dbError } = await supabase
                         .from('usuarios')
-                        .insert([{ 
-                            id: authData.user.id, 
-                            nombre: nombre, 
-                            email: email, 
-                            rol: 'cliente' 
+                        .insert([{
+                            id: authData.user.id,
+                            nombre: nombre,
+                            email: email,
+                            rol: 'cliente'
                         }]);
 
                     if (dbError) throw dbError;
 
-                    alert('🎉 ¡REGISTRO EXITOSO! Ya puedes iniciar sesión.');
+                    // 3. ¿Se inició sesión automáticamente?
+                    if (authData.session) {
+                        // SÍ → redirigir directo
+                        localStorage.setItem('nombreUsuario', nombre);
+                        localStorage.setItem('rolUsuario', 'cliente');
+
+                        mostrarToast('exito', '¡Bienvenido!', `Cuenta creada. Entrando al panel...`, 2500);
+
+                        setTimeout(() => {
+                            window.location.href = 'cliente.html';
+                        }, 1800);
+                    } else {
+                        // NO → necesita confirmar email
+                        mostrarToast('info', 'Revisa tu correo', 'Confirma tu email para iniciar sesión.', 6000);
+                        btn.disabled = false;
+                        btn.textContent = 'Crear cuenta';
+                    }
+
                 } catch (err) {
-                    alert('❌ ERROR: ' + err.message);
+                    mostrarToast('error', 'Error al registrar', err.message, 5000);
+                    btn.disabled = false;
+                    btn.textContent = 'Crear cuenta';
                 }
             });
 
-            // --- LOGIN ---
+            // ============ LOGIN CON ROLES ============
             document.getElementById('btn-login').addEventListener('click', async () => {
+                const btn = document.getElementById('btn-login');
                 try {
-                    const email = document.getElementById('login-email').value;
+                    const email = document.getElementById('login-email').value.trim();
                     const password = document.getElementById('login-password').value;
 
-                    const { error } = await supabase.auth.signInWithPassword({ email, password });
-                    if (error) throw error;
+                    if (!email || !password) {
+                        mostrarToast('error', 'Campos vacíos', 'Ingresa tu correo y contraseña.');
+                        return;
+                    }
 
-                    alert('✅ ¡Ingreso exitoso!');
-                    window.location.href = 'index.html';
+                    btn.disabled = true;
+                    btn.textContent = 'Entrando...';
+
+                    // 1. Iniciar sesión
+                    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+                        email,
+                        password
+                    });
+
+                    if (authError) throw authError;
+
+                    // 2. Consultar rol
+                    const { data: userData, error: userError } = await supabase
+                        .from('usuarios')
+                        .select('rol, nombre')
+                        .eq('id', authData.user.id)
+                        .single();
+
+                    if (userError) throw userError;
+
+                    // 3. Guardar info
+                    localStorage.setItem('nombreUsuario', userData.nombre);
+                    localStorage.setItem('rolUsuario', userData.rol);
+
+                    mostrarToast('exito', `¡Bienvenido, ${userData.nombre}!`, 'Redirigiendo a tu panel...', 2500);
+
+                    // 4. Redirigir según rol
+                    setTimeout(() => {
+                        if (userData.rol === 'admin') {
+                            window.location.href = 'admin.html';
+                        } else if (userData.rol === 'mesero') {
+                            window.location.href = 'mesero.html';
+                        } else if (userData.rol === 'chef') {
+                            window.location.href = 'chef.html';
+                        } else {
+                            window.location.href = 'cliente.html';
+                        }
+                    }, 1500);
+
                 } catch (err) {
-                    alert('❌ ERROR AL ENTRAR: ' + err.message);
+                    mostrarToast('error', 'Error al entrar', err.message, 5000);
+                    btn.disabled = false;
+                    btn.textContent = 'Entrar';
                 }
             });
         });
     </script>
 </body>
-                      </html>
+    </html>
