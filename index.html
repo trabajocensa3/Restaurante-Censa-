@@ -7,9 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/index.css">
 
-    <!-- ===== CSS DEL WIDGET DE AYUDA (inline, no depende de archivo externo) ===== -->
     <style>
-        /* Botón flotante */
+        /* ===== WIDGET DE AYUDA ===== */
         .help-btn {
             position: fixed;
             bottom: 25px;
@@ -38,7 +37,6 @@
             box-shadow: 0 12px 35px rgba(212, 175, 55, 0.65);
         }
 
-        /* Overlay que centra el modal */
         .help-overlay {
             position: fixed !important;
             inset: 0 !important;
@@ -54,7 +52,6 @@
         }
         .help-overlay.visible { display: flex !important; }
 
-        /* Modal */
         .help-modal {
             background: #252525;
             border: 1px solid #d4af37;
@@ -74,7 +71,6 @@
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* Botón cerrar */
         .help-close {
             position: absolute;
             top: 8px;
@@ -90,7 +86,6 @@
         }
         .help-close:hover { color: #d4af37; transform: rotate(90deg); }
 
-        /* Título */
         .help-title {
             font-family: 'Cormorant Garamond', serif;
             color: #d4af37;
@@ -101,13 +96,8 @@
             padding-bottom: 10px;
             padding-right: 30px;
         }
-        .help-title::before {
-            content: '✦ ';
-            font-size: 1rem;
-            margin-right: 4px;
-        }
+        .help-title::before { content: '✦ '; font-size: 1rem; margin-right: 4px; }
 
-        /* Contenido */
         .help-content p {
             color: #d8d4c8;
             font-size: 0.85rem;
@@ -134,10 +124,8 @@
         }
         .help-content li strong { color: #d4af37; font-weight: 600; }
 
-        /* Espacio extra en el footer para que el botón no tape el texto */
         footer { padding-bottom: 90px !important; }
 
-        /* Ajustes móviles */
         @media (max-width: 480px) {
             .help-btn { width: 46px; height: 46px; font-size: 1.4rem; bottom: 20px; right: 15px; }
             .help-overlay { padding: 30px 15px !important; }
@@ -250,7 +238,6 @@
         });
     </script>
 
-    <!-- ===== SCRIPT DEL WIDGET DE AYUDA ===== -->
     <script>
         (function() {
             document.addEventListener('DOMContentLoaded', function() {
