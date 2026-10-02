@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Mesero | Censa Gourmet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/mesero.css">
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header>
+        <a href="../index.html" class="logo">✦ Censa <span>Gourmet</span></a>
+        
+        <div class="user-nav">
+            <div class="user-badge">
+                <span>🤵🏻‍♂️ Mesero:</span>
+                <span id="user-name-display">Cargando...</span>
+            </div>
+            <button id="btn-logout" class="btn-logout">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="dashboard-container">
+        
+        <div class="dashboard-grid">
+
+            <!-- Columna Izquierda: Crear Comanda -->
+            <section class="card-box">
+                <h2 class="card-title">📝 Nueva Comanda</h2>
+
+                <!-- 1. Seleccionar Mesa -->
+                <div class="form-group">
+                    <label for="select-mesa">1. Seleccionar Mesa</label>
+                    <select id="select-mesa" class="form-control">
+                        <option value="">Cargando mesas...</option>
+                    </select>
+                </div>
+
+                <!-- 2. Observaciones Especiales para el Chef -->
+                <div class="obs-block">
+                    <label style="color: #d4af37; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 10px;">
+                        2. Observaciones de la Mesa para el Chef
+                    </label>
+
+                    <div class="obs-grid">
+                        <div class="obs-item">
+                            <label for="input-celebracion">🎉 ¿Celebración Especial?</label>
+                            <input type="text" id="input-celebracion" class="form-control" placeholder="Ej: Cumpleaños, Aniversario o N/A" value="N/A">
+                        </div>
+
+                        <div class="obs-item">
+                            <label for="input-alergias">⚠️ ¿Alergias / Restricciones?</label>
+                            <input type="text" id="input-alergias" class="form-control" placeholder="Ej: Mariscos, Glutén, Lactosa o N/A" value="N/A">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Menú de Platos Disponibles -->
+                <div class="form-group">
+                    <label>3. Añadir Platos a la Comanda</label>
+                    <div id="platos-container" class="platos-grid">
+                        <p style="color: #888; font-size: 0.85rem;">Cargando platos del menú...</p>
+                    </div>
+                </div>
+
+                <!-- 4. Ticket de la Comanda -->
+                <div class="form-group">
+                    <label>4. Resumen de la Orden</label>
+                    <div class="ticket-container">
+                        <table class="ticket-table">
+                            <thead>
+                                <tr>
+                                    <th>Plato</th>
+                                    <th style="text-align: center;">Cant.</th>
+                                    <th style="text-align: right;">Precio</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="ticket-body">
+                                <tr>
+                                    <td colspan="4" style="text-align: center; color: #666; padding: 15px;">
+                                        No hay platos agregados a esta comanda.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="ticket-total">
+                            <span>TOTAL A PAGAR:</span>
+                            <span id="ticket-total-val">$0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón de Envío al Chef -->
+                <button id="btn-enviar-comanda" class="btn-send-chef" disabled>
+                    👨‍🍳 Enviar Comanda al Chef
+                </button>
+            </section>
+
+            <!-- Columna Derecha: Comandas Enviadas / Estado de Cocina -->
+            <section class="card-box">
+                <h2 class="card-title">🍳 Estado de Comandas en Cocina</h2>
+
+                <div id="comandas-activas-container" class="comandas-list">
+                    <p style="text-align: center; color: #888; padding: 20px;">Cargando comandas activas...</p>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Censa Gourmet. Módulo de Atención y Servicio.</p>
+    </footer>
+
+    <!-- Supabase JS Module -->
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+        const supabaseUrl = 'https://xapucgyfhswgudkraeuz.supabase.co';
+        const supabaseKey = 'sb_publishable_tL2gtRtP68PEu0A86Qg2_Q_EeysDviw';
+        const supabase = createClient(supabaseUrl, supabaseKey);
+
+        let currentUser = null;
+        let comandaActual = [];
+
+        function formatearMoneda(valor) {
+            return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(valor);
+        }
+
+        // 1. Inicialización
+        document.addEventListener('DOMContentLoaded', async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+
+            if (!session) {
+                window.location.href = './login.html';
+                return;
+            }
+
+            currentUser = session.user;
+
+            let nombre = localStorage.getItem('nombreUsuario');
+            if (!nombre) {
+                const { data: perfil } = await supabase
+                    .from('usuarios')
+                    .select('nombre')
+                    .eq('id', currentUser.id)
+                    .single();
+                nombre = (perfil && perfil.nombre) ? perfil.nombre : currentUser.email.split('@')[0];
+            }
+
+            document.getElementById('user-name-display').textContent = nombre;
+
+            await cargarMesas();
+            await cargarPlatos();
+            await cargarComandasActivas();
+
+            document.getElementById('select-mesa').addEventListener('change', autoCargarNotasReserva);
+
+            // Escuchar actualizaciones en tiempo real de la tabla 'comandas'
+            supabase
+                .channel('realtime_comandas')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'comandas' }, () => {
+                    cargarComandasActivas();
+                })
+                .subscribe();
+        });
+
+        // Logout
+        document.getElementById('btn-logout').addEventListener('click', async () => {
+            await supabase.auth.signOut();
+            localStorage.clear();
+            window.location.href = '../index.html';
+        });
+
+        // 2. Cargar Mesas
+        async function cargarMesas() {
+            const select = document.getElementById('select-mesa');
+            const { data: mesas, error } = await supabase
+                .from('mesas')
+                .select('*')
+                .order('numero', { ascending: true });
+
+            if (error || !mesas) {
+                select.innerHTML = '<option value="">Error al cargar mesas</option>';
+                return;
+            }
+
+            select.innerHTML = '<option value="">-- Seleccionar Mesa --</option>';
+            mesas.forEach(mesa => {
+                const opt = document.createElement('option');
+                opt.value = mesa.id;
+                opt.textContent = `Mesa #${mesa.numero} (${mesa.ubicacion} - Cap: ${mesa.capacidad}p)`;
+                select.appendChild(opt);
+            });
+        }
+
+        // 3. Autocompletar datos de Reserva
+        async function autoCargarNotasReserva() {
+            const mesaId = document.getElementById('select-mesa').value;
+            const inputCel = document.getElementById('input-celebracion');
+            const inputAlergia = document.getElementById('input-alergias');
+
+            if (!mesaId) {
+                inputCel.value = "N/A";
+                inputAlergia.value = "N/A";
+                actualizarBotonEnvio();
+                return;
+            }
+
+            const hoy = new Date().toISOString().split('T')[0];
+
+            const { data: reserva } = await supabase
+                .from('reservas')
+                .select('notas')
+                .eq('mesa_id', mesaId)
+                .eq('fecha', hoy)
+                .neq('estado', 'cancelada')
+                .maybeSingle();
+
+            if (reserva && reserva.notas && reserva.notas.trim() !== '') {
+                const texto = reserva.notas;
+                inputCel.value = texto.toLowerCase().includes('cumple') || texto.toLowerCase().includes('aniversario') || texto.toLowerCase().includes('celebra') ? texto : "N/A";
+                inputAlergia.value = texto.toLowerCase().includes('alerg') || texto.toLowerCase().includes('intolera') ? texto : "N/A";
+
+                if (inputCel.value === "N/A" && inputAlergia.value === "N/A") {
+                    inputAlergia.value = texto;
+                }
+            } else {
+                inputCel.value = "N/A";
+                inputAlergia.value = "N/A";
+            }
+
+            actualizarBotonEnvio();
+        }
+
+        // 4. Cargar Platos
+        async function cargarPlatos() {
+            const contenedor = document.getElementById('platos-container');
+            const { data: platos, error } = await supabase
+                .from('platos')
+                .select('*')
+                .eq('disponible', true)
+                .order('nombre', { ascending: true });
+
+            if (error || !platos || platos.length === 0) {
+                contenedor.innerHTML = '<p style="color: #888;">No hay platos disponibles en la carta.</p>';
+                return;
+            }
+
+            contenedor.innerHTML = '';
+
+            platos.forEach(plato => {
+                const card = document.createElement('div');
+                card.className = 'plato-item-card';
+                card.innerHTML = `
+                    <div class="plato-nombre">${plato.nombre}</div>
+                    <div class="plato-precio">${formatearMoneda(plato.precio)}</div>
+                `;
+                card.addEventListener('click', () => agregarPlatoAComanda(plato));
+                contenedor.appendChild(card);
+            });
+        }
+
+        // 5. Agregar Plato al Ticket
+        function agregarPlatoAComanda(plato) {
+            const existe = comandaActual.find(item => item.plato_id === plato.id);
+
+            if (existe) {
+                existe.cantidad += 1;
+            } else {
+                comandaActual.push({
+                    plato_id: plato.id,
+                    nombre: plato.nombre,
+                    precio: plato.precio,
+                    cantidad: 1
+                });
+            }
+
+            renderizarTicket();
+        }
+
+        // Renderizar Ticket
+        function renderizarTicket() {
+            const tbody = document.getElementById('ticket-body');
+            const totalDisplay = document.getElementById('ticket-total-val');
+
+            if (comandaActual.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: #666; padding: 15px;">
+                            No hay platos agregados a esta comanda.
+                        </td>
+                    </tr>
+                `;
+                totalDisplay.textContent = formatearMoneda(0);
+                actualizarBotonEnvio();
+                return;
+            }
+
+            tbody.innerHTML = '';
+            let total = 0;
+
+            comandaActual.forEach((item, index) => {
+                const subtotal = item.precio * item.cantidad;
+                total += subtotal;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div><strong>${item.nombre}</strong></div>
+                    </td>
+                    <td style="text-align: center;">
+                        <button class="qty-btn" onclick="modificarCantidad(${index}, -1)">-</button>
+                        <span style="margin: 0 6px;">${item.cantidad}</span>
+                        <button class="qty-btn" onclick="modificarCantidad(${index}, 1)">+</button>
+                    </td>
+                    <td style="text-align: right;">${formatearMoneda(subtotal)}</td>
+                    <td style="text-align: right;">
+                        <button class="btn-remove" onclick="eliminarItem(${index})">✕</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            totalDisplay.textContent = formatearMoneda(total);
+            actualizarBotonEnvio();
+        }
+
+        window.modificarCantidad = (index, cambio) => {
+            comandaActual[index].cantidad += cambio;
+            if (comandaActual[index].cantidad <= 0) {
+                comandaActual.splice(index, 1);
+            }
+            renderizarTicket();
+        };
+
+        window.eliminarItem = (index) => {
+            comandaActual.splice(index, 1);
+            renderizarTicket();
+        };
+
+        function actualizarBotonEnvio() {
+            const mesaId = document.getElementById('select-mesa').value;
+            const btn = document.getElementById('btn-enviar-comanda');
+
+            if (mesaId && comandaActual.length > 0) {
+                btn.disabled = false;
+            } else {
+                btn.disabled = true;
+            }
+        }
+
+        // 6. Enviar Comanda al Chef
+        document.getElementById('btn-enviar-comanda').addEventListener('click', async () => {
+            const mesaId = document.getElementById('select-mesa').value;
+            if (!mesaId || comandaActual.length === 0) return;
+
+            const btn = document.getElementById('btn-enviar-comanda');
+            btn.disabled = true;
+            btn.textContent = 'Enviando a Cocina...';
+
+            const cele = document.getElementById('input-celebracion').value.trim() || 'N/A';
+            const alergia = document.getElementById('input-alergias').value.trim() || 'N/A';
+
+            const notaChef = `[🎉 Celebración: ${cele}] | [⚠️ Alergias: ${alergia}]`;
+            const totalCalculado = comandaActual.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
+
+            const { data: comandaCreada, error: errorComanda } = await supabase
+                .from('comandas')
+                .insert([{
+                    mesa_id: mesaId,
+                    mesero_id: currentUser.id,
+                    estado: 'pendiente',
+                    total: totalCalculado,
+                    notas: notaChef
+                }])
+                .select()
+                .single();
+
+            if (errorComanda) {
+                console.error("Error al crear comanda:", errorComanda);
+                alert("Error al enviar comanda: " + errorComanda.message);
+                btn.disabled = false;
+                btn.textContent = '👨‍🍳 Enviar Comanda al Chef';
+                return;
+            }
+
+            const detallesInsertar = comandaActual.map(item => ({
+                comanda_id: comandaCreada.id,
+                plato_id: item.plato_id,
+                cantidad: item.cantidad
+            }));
+
+            const { error: errorDetalles } = await supabase
+                .from('comanda_detalles')
+                .insert(detallesInsertar);
+
+            if (errorDetalles) {
+                console.error("Error al guardar detalles:", errorDetalles);
+                alert("Fallo al insertar platillos.");
+            } else {
+                alert("¡Comanda enviada con éxito a Cocina!");
+                comandaActual = [];
+                document.getElementById('select-mesa').value = '';
+                document.getElementById('input-celebracion').value = 'N/A';
+                document.getElementById('input-alergias').value = 'N/A';
+                renderizarTicket();
+                cargarComandasActivas();
+            }
+
+            btn.textContent = '👨‍🍳 Enviar Comanda al Chef';
+        });
+
+        // 7. Cargar Comandas Activas y Gestionar Acciones (Cancelar / Entregar)
+        async function cargarComandasActivas() {
+            const contenedor = document.getElementById('comandas-activas-container');
+
+            const { data: comandas, error } = await supabase
+                .from('comandas')
+                .select('*, mesas(numero), comanda_detalles(*, platos(nombre))')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error("Error al cargar comandas:", error);
+                contenedor.innerHTML = '<p style="color: #e74c3c;">Error al obtener comandas.</p>';
+                return;
+            }
+
+            if (!comandas || comandas.length === 0) {
+                contenedor.innerHTML = '<p style="text-align: center; color: #888; padding: 20px;">No hay comandas registradas.</p>';
+                return;
+            }
+
+            contenedor.innerHTML = '';
+
+            comandas.forEach(com => {
+                const card = document.createElement('div');
+                card.className = 'comanda-card';
+
+                const numMesa = com.mesas ? `Mesa #${com.mesas.numero}` : 'Mesa N/A';
+                const itemsList = com.comanda_detalles && com.comanda_detalles.length > 0 
+                    ? com.comanda_detalles.map(d => `<li>${d.cantidad}x ${d.platos ? d.platos.nombre : 'Plato'}</li>`).join('')
+                    : '<li>Sin detalles</li>';
+
+                const notasChefDisplay = com.notas ? `<div class="comanda-obs-tag">${com.notas}</div>` : '';
+
+                // Definir botones según el estado
+                let accionesHTML = '';
+                const estadoLower = (com.estado || 'pendiente').toLowerCase();
+
+                if (estadoLower === 'pendiente') {
+                    accionesHTML = `<button class="btn-card-action btn-card-cancel" onclick="cancelarComanda('${com.id}')">🚫 Cancelar</button>`;
+                } else if (estadoLower === 'listo') {
+                    accionesHTML = `<button class="btn-card-action btn-card-deliver" onclick="entregarComanda('${com.id}')">✅ Marcar Entregado</button>`;
+                }
+
+                card.innerHTML = `
+                    <div class="comanda-header">
+                        <span class="comanda-mesa">${numMesa}</span>
+                        <span class="status-badge ${estadoLower}">${estadoLower.replace('_', ' ')}</span>
+                    </div>
+                    ${notasChefDisplay}
+                    <ul class="comanda-items">
+                        ${itemsList}
+                    </ul>
+                    <div class="comanda-footer">
+                        <span class="comanda-total">Total: ${formatearMoneda(com.total || 0)}</span>
+                        <div class="comanda-actions">
+                            ${accionesHTML}
+                        </div>
+                    </div>
+                `;
+
+                contenedor.appendChild(card);
+            });
+        }
+
+        // Cancelar pedido sólo si el estado sigue 'pendiente'
+        window.cancelarComanda = async (comandaId) => {
+            if (!confirm("¿Deseas cancelar esta comanda? Esta acción no se puede deshacer.")) return;
+
+            const { error } = await supabase
+                .from('comandas')
+                .update({ estado: 'cancelado' })
+                .eq('id', comandaId)
+                .eq('estado', 'pendiente');
+
+            if (error) {
+                alert("No se pudo cancelar la comanda: " + error.message);
+            } else {
+                alert("La comanda ha sido cancelada.");
+                cargarComandasActivas();
+            }
+        };
+
+        // Marcar pedido como 'entregado' a la mesa cuando el chef lo marque como 'listo'
+        window.entregarComanda = async (comandaId) => {
+            const { error } = await supabase
+                .from('comandas')
+                .update({ estado: 'entregado' })
+                .eq('id', comandaId);
+
+            if (error) {
+                alert("Error al actualizar la comanda: " + error.message);
+            } else {
+                alert("¡Pedido entregado con éxito a la mesa!");
+                cargarComandasActivas();
+            }
+        };
+    </script>
+</body>
+</html>

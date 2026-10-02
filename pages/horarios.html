@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horarios - Restaurante Censa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Hojas de estilo unificadas -->
+    <link rel="stylesheet" href="../assets/css/index.css">
+    <link rel="stylesheet" href="../assets/css/horarios.css">
+</head>
+<body>
+
+    <!-- Encabezado y Navegación Dinámica -->
+    <header>
+        <div class="logo">
+            <a href="../index.html" style="text-decoration: none; color: inherit;">✦ Censa <span>Gourmet</span></a>
+        </div>
+        
+        <nav class="header-nav" id="header-nav">
+            <a href="../index.html" class="nav-link">← Volver al Inicio</a>
+            <a href="./login.html" class="nav-link">Iniciar Sesión</a>
+            <a href="./login.html" class="nav-btn-gold">Registrarse</a>
+        </nav>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="container">
+        
+        <section class="horarios-header">
+            <h1 class="horarios-title">Horarios de Atención</h1>
+            <p class="horarios-subtitle">Te esperamos para brindarte la mejor experiencia gastronómica</p>
+        </section>
+
+        <!-- Widget de Estado en Tiempo Real (Abierto/Cerrado) -->
+        <div class="status-badge-container">
+            <div id="status-badge" class="status-badge">
+                <span class="status-dot"></span>
+                <span id="status-text">Consultando estado...</span>
+            </div>
+        </div>
+
+        <!-- Tabla/Lista de Horarios desde Supabase -->
+        <section class="horarios-card">
+            <div id="horarios-list">
+                <p style="text-align: center; padding: 30px; color: #b8b0a0;">Cargando horarios de atención...</p>
+            </div>
+        </section>
+
+
+    </main>
+
+    <!-- Pie de Página -->
+    <footer>
+        <div class="footer-brand">✦ Censa <span>Gourmet</span></div>
+        <p>&copy; 2026 Alta Cocina & Experiencia Gourmet. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Script de Supabase y Lógica de Horarios en Vivo -->
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+        
+        const supabaseUrl = 'https://xapucgyfhswgudkraeuz.supabase.co';
+        const supabaseKey = 'sb_publishable_tL2gtRtP68PEu0A86Qg2_Q_EeysDviw'; 
+        const supabase = createClient(supabaseUrl, supabaseKey);
+
+        // Map para asociar días de la semana de JS (0=Dom, 1=Lun...) con Supabase ID
+        const mapaDiasJS = { 0: 7, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6 };
+
+        // 1. Control de Sesión en Header
+        async function verificarSesion() {
+            const { data: { session } } = await supabase.auth.getSession();
+            const nav = document.getElementById('header-nav');
+
+            if (session) {
+                let nombre = localStorage.getItem('nombreUsuario') || 'Usuario';
+                let rol = localStorage.getItem('rolUsuario') || 'cliente';
+
+                if (!localStorage.getItem('rolUsuario')) {
+                    const { data: usuario } = await supabase
+                        .from('usuarios')
+                        .select('nombre, rol')
+                        .eq('id', session.user.id)
+                        .single();
+
+                    if (usuario) {
+                        nombre = usuario.nombre;
+                        rol = usuario.rol;
+                        localStorage.setItem('nombreUsuario', nombre);
+                        localStorage.setItem('rolUsuario', rol);
+                    }
+                }
+
+                const panelesPorRol = {
+                    admin: './admin.html',
+                    chef: './chef.html',
+                    mesero: './mesero.html',
+                    cliente: './cliente.html'
+                };
+
+                const rutaPanel = panelesPorRol[rol.toLowerCase()] || './cliente.html';
+
+                nav.innerHTML = `
+                    <a href="../index.html" class="nav-link">← Volver al Inicio</a>
+                    <span class="user-greeting">Bienvenido, <strong>${nombre}</strong></span>
+                    <a href="${rutaPanel}" class="nav-btn-gold">Ir a mi Panel</a>
+                    <button id="btn-cerrar-sesion" class="btn-logout-nav">Cerrar Sesión</button>
+                `;
+
+                document.getElementById('btn-cerrar-sesion').addEventListener('click', async () => {
+                    await supabase.auth.signOut();
+                    localStorage.clear();
+                    window.location.reload();
+                });
+            }
+        }
+
+        // 2. Formatear hora de 24h a 12h (Ej: "12:00:00" -> "12:00 PM")
+        function formatearHora(horaString) {
+            if (!horaString) return '';
+            const [horas, minutos] = horaString.split(':');
+            let h = parseInt(horas, 10);
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            return `${h}:${minutos} ${ampm}`;
+        }
+
+        // 3. Cargar Horarios de Supabase y Renderizar
+        async function cargarHorarios() {
+            const container = document.getElementById('horarios-list');
+            const { data: horarios, error } = await supabase
+                .from('horarios')
+                .select('*')
+                .order('id', { ascending: true });
+
+            if (error) {
+                console.error("Error al obtener horarios:", error);
+                container.innerHTML = '<p style="text-align: center; color: #e74c3c; padding: 20px;">No se pudieron cargar los horarios.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+
+            // Obtener información del momento actual
+            const ahora = new Date();
+            const diaSemanaJS = ahora.getDay(); // 0 a 6
+            const diaActualId = mapaDiasJS[diaSemanaJS]; // 1 a 7 de la BD
+            
+            const horaActualNum = ahora.getHours() * 60 + ahora.getMinutes(); // Minutos transcurridos hoy
+
+            let estaAbiertoHoy = false;
+
+            horarios.forEach(h => {
+                const esHoy = h.id === diaActualId;
+                const estaCerrado = h.cerrado;
+
+                // Parsear horas de la BD a minutos para comparar
+                if (esHoy && !estaCerrado && h.hora_apertura && h.hora_cierre) {
+                    const [hA, mA] = h.hora_apertura.split(':').map(Number);
+                    const [hC, mC] = h.hora_cierre.split(':').map(Number);
+                    const minutosApertura = hA * 60 + mA;
+                    const minutosCierre = hC * 60 + mC;
+
+                    if (horaActualNum >= minutosApertura && horaActualNum < minutosCierre) {
+                        estaAbiertoHoy = true;
+                    }
+                }
+
+                // Generar HTML de la fila
+                const row = document.createElement('div');
+                row.className = `horario-row ${esHoy ? 'is-today' : ''}`;
+
+                const tagHoyHtml = esHoy ? '<span class="tag-hoy">Hoy</span>' : '';
+                
+                let horasText = '';
+                if (estaCerrado) {
+                    horasText = '<span class="hora-cerrado">Cerrado</span>';
+                } else {
+                    horasText = `<span class="hora-rango">${formatearHora(h.hora_apertura)} — ${formatearHora(h.hora_cierre)}</span>`;
+                }
+
+                row.innerHTML = `
+                    <div class="dia-info">
+                        <span class="dia-nombre">${h.dia}</span> ${tagHoyHtml}
+                    </div>
+                    <div>
+                        ${horasText}
+                    </div>
+                `;
+
+                container.appendChild(row);
+            });
+
+            // Actualizar Widget de Estado en Vivo
+            actualizarEstadoBadge(estaAbiertoHoy);
+        }
+
+        // 4. Actualizar estado del Widget superior
+        function actualizarEstadoBadge(abierto) {
+            const badge = document.getElementById('status-badge');
+            const statusText = document.getElementById('status-text');
+
+            if (abierto) {
+                badge.className = 'status-badge open';
+                statusText.textContent = 'Abierto Ahora';
+            } else {
+                badge.className = 'status-badge closed';
+                statusText.textContent = 'Cerrado Ahora';
+            }
+        }
+
+        // Inicialización al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            verificarSesion();
+            cargarHorarios();
+        });
+    </script>
+</body>
+</html>
