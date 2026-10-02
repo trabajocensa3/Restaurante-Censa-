@@ -1,115 +1,5 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
 
-body {
-    font-family: 'Montserrat', sans-serif;
-    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
-    color: #f5f0e8;
-    min-height: 100vh;
-    position: relative;
-    overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
-}
 
-body::before {
-    content: '';
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-image: radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.06) 0%, transparent 50%),
-                      radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.06) 0%, transparent 50%);
-    pointer-events: none;
-    z-index: 0;
-}
-
-/* --- HEADER Y NAVEGACIÓN --- */
-header {
-    position: relative;
-    z-index: 2;
-    padding: 25px 60px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-    flex-wrap: wrap;
-    gap: 15px;
-    background: rgba(15, 15, 15, 0.6);
-    backdrop-filter: blur(10px);
-}
-
-.logo {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #d4af37;
-    letter-spacing: 2px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.logo span {
-    color: #f5f0e8;
-    font-weight: 400;
-    font-style: italic;
-}
-
-.header-nav {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.header-nav a {
-    text-decoration: none;
-    font-size: 0.85rem;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.nav-link, 
-.nav-link:visited {
-    color: #f5f0e8;
-}
-
-.nav-link:hover {
-    color: #d4af37;
-}
-
-.nav-btn-gold, 
-.nav-btn-gold:visited {
-    color: #0f0f0f;
-    background: #d4af37;
-    padding: 8px 18px;
-    border-radius: 2px;
-    font-weight: 600;
-}
-
-.nav-btn-gold:hover {
-    background: #f5d76e;
-    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
-}
-
-/* --- ESTILOS DE USUARIO Y CERRAR SESIÓN EN NAVBAR --- */
-.user-greeting {
-    color: #d4af37;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 500;
-    margin-right: 10px;
-}
-
-/* ============================================
-   WIDGET DE AYUDA - Restaurante Censa
-   Archivo: assets/css/help.css
-   ============================================ */
-
-/* Botón flotante */
 .help-btn {
     position: fixed;
     bottom: 25px;
@@ -138,7 +28,6 @@ header {
     box-shadow: 0 12px 35px rgba(212, 175, 55, 0.65);
 }
 
-/* Overlay que centra el modal */
 .help-overlay {
     position: fixed !important;
     inset: 0 !important;
@@ -155,12 +44,12 @@ header {
     align-items: center !important;
     padding: 40px 20px !important;
     margin: 0 !important;
+    box-sizing: border-box !important;
 }
 .help-overlay.visible {
     display: flex !important;
 }
 
-/* Modal */
 .help-modal {
     background: #252525;
     border: 1px solid #d4af37;
@@ -174,13 +63,13 @@ header {
     overflow-y: auto;
     margin: 0 !important;
     animation: helpIn 0.3s ease;
+    box-sizing: border-box;
 }
 @keyframes helpIn {
     from { opacity: 0; transform: translateY(15px) scale(0.98); }
     to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* Botón cerrar */
 .help-close {
     position: absolute;
     top: 8px;
@@ -196,7 +85,6 @@ header {
 }
 .help-close:hover { color: #d4af37; transform: rotate(90deg); }
 
-/* Título */
 .help-title {
     font-family: 'Cormorant Garamond', serif;
     color: #d4af37;
@@ -213,7 +101,6 @@ header {
     margin-right: 4px;
 }
 
-/* Contenido */
 .help-content p {
     color: #d8d4c8;
     font-size: 0.85rem;
@@ -247,12 +134,10 @@ header {
     font-weight: 600;
 }
 
-/* Espacio extra en el footer para que el botón flotante no tape el texto */
 footer {
     padding-bottom: 90px !important;
 }
 
-/* Ajustes móviles */
 @media (max-width: 480px) {
     .help-btn {
         width: 46px;
