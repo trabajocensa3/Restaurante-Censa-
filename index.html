@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,266 +5,105 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Restaurante Censa</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
-            color: #f5f0e8;
-            min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image: radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.06) 0%, transparent 50%),
-                              radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.06) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        header {
-            position: relative;
-            z-index: 2;
-            padding: 25px 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-            flex-wrap: wrap;
-            gap: 15px;
-            background: rgba(15, 15, 15, 0.6);
-            backdrop-filter: blur(10px);
-        }
-
-        .logo {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #d4af37;
-            letter-spacing: 2px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo span {
-            color: #f5f0e8;
-            font-weight: 400;
-            font-style: italic;
-        }
-
-        .nav-info {
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: #b8b0a0;
-        }
-
-
-        .hero {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            padding: 120px 20px 100px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .hero::before {
-            content: '✦';
-            display: block;
-            color: #d4af37;
-            font-size: 1.5rem;
-            margin-bottom: 25px;
-            letter-spacing: 15px;
-        }
-
-        .hero h1 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 4.5rem;
-            font-weight: 600;
-            margin-bottom: 25px;
-            line-height: 1.1;
-            color: #f5f0e8;
-            letter-spacing: 1px;
-        }
-
-        .hero h1 em {
-            color: #d4af37;
-            font-style: italic;
-        }
-
-        .hero p {
-            font-size: 1.1rem;
-            color: #b8b0a0;
-            font-weight: 300;
-            letter-spacing: 2px;
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.8;
-        }
-
-        .divider {
-            width: 80px;
-            height: 1px;
-            background: #d4af37;
-            margin: 35px auto;
-            position: relative;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: '';
-            position: absolute;
-            top: -2px;
-            width: 5px;
-            height: 5px;
-            background: #d4af37;
-            border-radius: 50%;
-        }
-
-        .divider::before { left: -10px; }
-        .divider::after { right: -10px; }
-
-        .hero-buttons {
-            display: flex;
-            gap: 25px;
-            justify-content: center;
-            align-items: center;
-            margin-top: 50px;
-            flex-wrap: wrap;
-        }
-
-        .hero-buttons a {
-            position: relative;
-            text-decoration: none;
-            padding: 20px 55px;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 600;
-            font-size: 0.9rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            transition: all 0.4s ease;
-            overflow: hidden;
-            border-radius: 2px;
-            min-width: 220px;
-        }
-
-        .hero-buttons a::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-            transition: left 0.6s ease;
-        }
-
-        .hero-buttons a:hover::before {
-            left: 100%;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #d4af37 0%, #f5d76e 50%, #d4af37 100%);
-            color: #0f0f0f;
-            border: 2px solid #d4af37;
-            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.25);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 45px rgba(212, 175, 55, 0.6);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: #d4af37;
-            border: 2px solid #d4af37;
-        }
-
-        .btn-secondary:hover {
-            background: #d4af37;
-            color: #0f0f0f;
-            transform: translateY(-3px);
-            box-shadow: 0 15px 45px rgba(212, 175, 55, 0.5);
-        }
-
-        @media (max-width: 768px) {
-            header {
-                padding: 20px 25px;
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .logo { font-size: 1.4rem; }
-            .nav-info { font-size: 0.7rem; }
-
-            .hero {
-                padding: 70px 20px 60px;
-            }
-
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero p {
-                font-size: 0.9rem;
-                letter-spacing: 1px;
-            }
-
-            .hero-buttons {
-                flex-direction: column;
-                gap: 18px;
-                margin-top: 40px;
-            }
-
-            .hero-buttons a {
-                width: 100%;
-                max-width: 320px;
-                padding: 18px 30px;
-                font-size: 0.8rem;
-                letter-spacing: 2px;
-            }
-        }
-
-        @media (max-width: 400px) {
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            .hero-buttons a {
-                padding: 16px 20px;
-                font-size: 0.75rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="./assets/css/index.css">
+    
 </head>
 <body>
 
     <header>
-        <div class="logo">✦ Censa <span>Restaurante</span></div>
+        <div class="logo">✦ Censa <span>Gourmet</span></div>
+        
+        <!-- Accesos rápidos con ID para manipular según el estado de la sesión -->
+        <nav class="header-nav" id="header-nav">
+            <a href="./pages/login.html" class="nav-link">Iniciar Sesión</a>
+            <a href="./pages/login.html" class="nav-btn-gold">Registrarse</a>
+        </nav>
     </header>
 
     <section class="hero">
-        <h1>Bienvenido a <em>Censa</em></h1>
+        <h1>Bienvenido a <em>Censa Gourmet</em></h1>
         <div class="divider"></div>
         <p>Una experiencia gastronómica donde cada detalle cuenta. Reserva tu mesa y déjate consentir.</p>
 
+        <!-- Botones de navegación principal -->
         <div class="hero-buttons">
-            <a href="login.html" class="btn-primary">Iniciar Sesión</a>
-            <a href="login.html" class="btn-secondary">Registrarse</a>
+            <a href="./pages/menu.html" class="btn-primary">Ver Nuestro Menú</a>
+            <a href="./pages/horarios.html" class="btn-secondary">Horarios</a>
+            <a href="./pages/historia.html" class="btn-secondary">Nuestra Historia</a>
+            <a href="./pages/contacto.html" class="btn-secondary">Contáctanos</a>
         </div>
     </section>
 
+    <!-- Footer Integrado Directamente -->
+    <footer>
+        <div class="footer-brand">✦ Censa <span>Gourmet</span></div>
+        <p>&copy; 2026 Alta Cocina & Experiencia Gourmet. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- CDN de Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Script de control de sesión y redirección por rol -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. Inicializar Supabase
+            const supabaseUrl = 'https://xapucgyfhswgudkraeuz.supabase.co';
+            const supabaseKey = 'sb_publishable_tL2gtRtP68PEu0A86Qg2_Q_EeysDviw';
+            const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+            // 2. Comprobar si hay una sesión activa
+            const { data: { session } } = await supabase.auth.getSession();
+            const nav = document.getElementById('header-nav');
+
+            if (session) {
+                // Obtener datos del localStorage (guardados al iniciar sesión)
+                let nombre = localStorage.getItem('nombreUsuario') || 'Usuario';
+                let rol = localStorage.getItem('rolUsuario') || 'cliente';
+
+                // Si por alguna razón no están en localStorage, consultamos a Supabase
+                if (!localStorage.getItem('rolUsuario')) {
+                    const { data: usuario } = await supabase
+                        .from('usuarios')
+                        .select('nombre, rol')
+                        .eq('id', session.user.id)
+                        .single();
+
+                    if (usuario) {
+                        nombre = usuario.nombre;
+                        rol = usuario.rol;
+                        localStorage.setItem('nombreUsuario', nombre);
+                        localStorage.setItem('rolUsuario', rol);
+                    }
+                }
+
+                // 3. Mapear cada ROL a su panel correspondiente
+                const panelesPorRol = {
+                    admin: './pages/admin.html',
+                    chef: './pages/chef.html',
+                    mesero: './pages/mesero.html',
+                    cliente: './pages/cliente.html'
+                };
+
+                // Si el rol no coincide con ninguno, redirige por defecto a cliente (menú)
+                const rutaPanel = panelesPorRol[rol.toLowerCase()] || './pages/menu.html';
+
+                // 4. Cambiar el contenido del Nav
+                nav.innerHTML = `
+                    <span class="user-greeting">Bienvenido, <strong>${nombre}</strong></span>
+                    <a href="${rutaPanel}" class="nav-btn-gold">Ir a mi Panel </a>
+                    <button id="btn-cerrar-sesion" class="btn-logout-nav">Cerrar Sesión</button>
+                `;
+
+                // 5. Asignar evento al botón de Cerrar Sesión
+                document.getElementById('btn-cerrar-sesion').addEventListener('click', async () => {
+                    await supabase.auth.signOut();
+                    localStorage.clear();
+                    window.location.reload();
+                });
+            }
+        });
+    </script>
+
 </body>
 </html>
+
