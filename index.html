@@ -6,135 +6,6 @@
     <title>Restaurante Censa</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/index.css">
-
-    <style>
-        /* ===== WIDGET DE AYUDA ===== */
-        .help-btn {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #d4af37 0%, #f5d76e 50%, #d4af37 100%);
-            color: #0f0f0f;
-            border: 2px solid #d4af37;
-            font-size: 1.6rem;
-            font-weight: 700;
-            font-family: 'Cormorant Garamond', serif;
-            cursor: pointer;
-            z-index: 9000;
-            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.45);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            line-height: 1;
-        }
-        .help-btn:hover {
-            transform: scale(1.1) rotate(8deg);
-            box-shadow: 0 12px 35px rgba(212, 175, 55, 0.65);
-        }
-
-        .help-overlay {
-            position: fixed !important;
-            inset: 0 !important;
-            background: rgba(0, 0, 0, 0.78) !important;
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-            z-index: 9500 !important;
-            display: none;
-            justify-content: center !important;
-            align-items: center !important;
-            padding: 40px 20px !important;
-            margin: 0 !important;
-        }
-        .help-overlay.visible { display: flex !important; }
-
-        .help-modal {
-            background: #252525;
-            border: 1px solid #d4af37;
-            border-radius: 6px;
-            max-width: 500px;
-            width: 100%;
-            padding: 28px 26px 24px;
-            position: relative;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(212, 175, 55, 0.15);
-            max-height: 70vh;
-            overflow-y: auto;
-            margin: 0 !important;
-            animation: helpIn 0.3s ease;
-        }
-        @keyframes helpIn {
-            from { opacity: 0; transform: translateY(15px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .help-close {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: transparent;
-            border: none;
-            color: #b8b0a0;
-            font-size: 1.15rem;
-            cursor: pointer;
-            padding: 6px 10px;
-            line-height: 1;
-            transition: 0.3s;
-        }
-        .help-close:hover { color: #d4af37; transform: rotate(90deg); }
-
-        .help-title {
-            font-family: 'Cormorant Garamond', serif;
-            color: #d4af37;
-            font-size: 1.5rem;
-            margin-bottom: 14px;
-            letter-spacing: 1px;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.25);
-            padding-bottom: 10px;
-            padding-right: 30px;
-        }
-        .help-title::before { content: '✦ '; font-size: 1rem; margin-right: 4px; }
-
-        .help-content p {
-            color: #d8d4c8;
-            font-size: 0.85rem;
-            line-height: 1.6;
-            margin-bottom: 12px;
-        }
-        .help-content ul { list-style: none; padding: 0; margin: 0; }
-        .help-content li {
-            color: #d8d4c8;
-            font-size: 0.83rem;
-            line-height: 1.55;
-            padding: 8px 0 8px 24px;
-            position: relative;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .help-content li:last-child { border-bottom: none; }
-        .help-content li::before {
-            content: '✦';
-            color: #d4af37;
-            position: absolute;
-            left: 0;
-            top: 9px;
-            font-size: 0.8rem;
-        }
-        .help-content li strong { color: #d4af37; font-weight: 600; }
-
-        footer { padding-bottom: 90px !important; }
-
-        @media (max-width: 480px) {
-            .help-btn { width: 46px; height: 46px; font-size: 1.4rem; bottom: 20px; right: 15px; }
-            .help-overlay { padding: 30px 15px !important; }
-            .help-modal { padding: 22px 18px 18px; max-height: 65vh; }
-            .help-title { font-size: 1.3rem; }
-            .help-content li, .help-content p { font-size: 0.8rem; }
-            footer { padding-bottom: 80px !important; }
-        }
-    </style>
 </head>
 <body>
 
@@ -160,25 +31,29 @@
         </div>
     </section>
 
-    <footer>
+    <footer style="padding-bottom: 90px;">
         <div class="footer-brand">✦ Censa <span>Gourmet</span></div>
         <p>&copy; 2026 Alta Cocina & Experiencia Gourmet. Todos los derechos reservados.</p>
     </footer>
 
-    <!-- ===== WIDGET DE AYUDA ===== -->
-    <button class="help-btn" id="helpBtn" aria-label="Ayuda">?</button>
-    <div class="help-overlay" id="helpOverlay">
-        <div class="help-modal">
-            <button class="help-close" id="helpClose" aria-label="Cerrar">✕</button>
-            <h3 class="help-title">Guía rápida</h3>
-            <div class="help-content">
-                <p>Bienvenido a Censa Gourmet.</p>
-                <ul>
-                    <li><strong>Ver Nuestro Menú:</strong> explora platos por categoría.</li>
-                    <li><strong>Horarios:</strong> días y horas de atención.</li>
-                    <li><strong>Nuestra Historia:</strong> conoce nuestra trayectoria.</li>
-                    <li><strong>Contáctanos:</strong> teléfonos, correo y ubicación.</li>
-                    <li>Si <strong>inicias sesión</strong>, arriba aparece tu nombre y el botón a tu panel.</li>
+    <!-- ===== WIDGET DE AYUDA (todo inline) ===== -->
+    <button id="helpBtn" aria-label="Ayuda"
+        style="position:fixed;bottom:25px;right:25px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#d4af37 0%,#f5d76e 50%,#d4af37 100%);color:#0f0f0f;border:2px solid #d4af37;font-size:1.6rem;font-weight:700;font-family:'Cormorant Garamond',serif;cursor:pointer;z-index:9000;box-shadow:0 8px 25px rgba(212,175,55,0.45);display:flex;align-items:center;justify-content:center;padding:0;line-height:1;transition:all 0.3s ease;">?</button>
+
+    <div id="helpOverlay"
+        style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.78);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:9500;justify-content:center;align-items:center;padding:40px 20px;box-sizing:border-box;margin:0;">
+        <div style="background:#252525;border:1px solid #d4af37;border-radius:6px;max-width:500px;width:100%;padding:28px 26px 24px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.8),0 0 40px rgba(212,175,55,0.15);max-height:70vh;overflow-y:auto;box-sizing:border-box;margin:0;">
+            <button id="helpClose" aria-label="Cerrar"
+                style="position:absolute;top:8px;right:8px;background:transparent;border:none;color:#b8b0a0;font-size:1.15rem;cursor:pointer;padding:6px 10px;line-height:1;">✕</button>
+            <h3 style="font-family:'Cormorant Garamond',serif;color:#d4af37;font-size:1.5rem;margin:0 0 14px 0;letter-spacing:1px;border-bottom:1px solid rgba(212,175,55,0.25);padding-bottom:10px;padding-right:30px;">✦ Guía rápida</h3>
+            <div>
+                <p style="color:#d8d4c8;font-size:0.85rem;line-height:1.6;margin:0 0 12px 0;font-family:'Montserrat',sans-serif;">Bienvenido a Censa Gourmet.</p>
+                <ul style="list-style:none;padding:0;margin:0;font-family:'Montserrat',sans-serif;">
+                    <li style="color:#d8d4c8;font-size:0.83rem;line-height:1.55;padding:10px 0 10px 24px;position:relative;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:#d4af37;position:absolute;left:0;top:10px;font-size:0.8rem;">✦</span><strong style="color:#d4af37;font-weight:600;">Ver Nuestro Menú:</strong> explora platos por categoría.</li>
+                    <li style="color:#d8d4c8;font-size:0.83rem;line-height:1.55;padding:10px 0 10px 24px;position:relative;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:#d4af37;position:absolute;left:0;top:10px;font-size:0.8rem;">✦</span><strong style="color:#d4af37;font-weight:600;">Horarios:</strong> días y horas de atención.</li>
+                    <li style="color:#d8d4c8;font-size:0.83rem;line-height:1.55;padding:10px 0 10px 24px;position:relative;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:#d4af37;position:absolute;left:0;top:10px;font-size:0.8rem;">✦</span><strong style="color:#d4af37;font-weight:600;">Nuestra Historia:</strong> conoce nuestra trayectoria.</li>
+                    <li style="color:#d8d4c8;font-size:0.83rem;line-height:1.55;padding:10px 0 10px 24px;position:relative;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:#d4af37;position:absolute;left:0;top:10px;font-size:0.8rem;">✦</span><strong style="color:#d4af37;font-weight:600;">Contáctanos:</strong> teléfonos, correo y ubicación.</li>
+                    <li style="color:#d8d4c8;font-size:0.83rem;line-height:1.55;padding:10px 0 10px 24px;position:relative;"><span style="color:#d4af37;position:absolute;left:0;top:10px;font-size:0.8rem;">✦</span>Si <strong style="color:#d4af37;font-weight:600;">inicias sesión</strong>, arriba aparece tu nombre y el botón a tu panel.</li>
                 </ul>
             </div>
         </div>
@@ -238,28 +113,36 @@
         });
     </script>
 
+    <!-- ===== SCRIPT DEL WIDGET (controla el display directamente) ===== -->
     <script>
         (function() {
-            document.addEventListener('DOMContentLoaded', function() {
-                const helpBtn = document.getElementById('helpBtn');
-                const helpOverlay = document.getElementById('helpOverlay');
-                const helpClose = document.getElementById('helpClose');
-                if (!helpBtn || !helpOverlay || !helpClose) return;
+            function initHelp() {
+                var btn = document.getElementById('helpBtn');
+                var overlay = document.getElementById('helpOverlay');
+                var close = document.getElementById('helpClose');
+                if (!btn || !overlay || !close) return;
 
-                helpOverlay.classList.remove('visible');
+                overlay.style.display = 'none';
 
-                const abrir = () => helpOverlay.classList.add('visible');
-                const cerrar = () => helpOverlay.classList.remove('visible');
-
-                helpBtn.addEventListener('click', abrir);
-                helpClose.addEventListener('click', cerrar);
-                helpOverlay.addEventListener('click', (e) => {
-                    if (e.target === helpOverlay) cerrar();
+                btn.addEventListener('click', function() {
+                    overlay.style.display = 'flex';
                 });
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape') cerrar();
+                close.addEventListener('click', function() {
+                    overlay.style.display = 'none';
                 });
-            });
+                overlay.addEventListener('click', function(e) {
+                    if (e.target === overlay) overlay.style.display = 'none';
+                });
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') overlay.style.display = 'none';
+                });
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initHelp);
+            } else {
+                initHelp();
+            }
         })();
     </script>
 
