@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto | Censa Gourmet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/contacto.css">
+</head>
+<body>
+
+    <header>
+        <a href="../index.html" class="logo" style="text-decoration: none;">✦ Censa <span>Gourmet</span></a>
+        
+        <nav class="header-nav" id="header-nav">
+            <a href="login.html" class="nav-link">Iniciar Sesión</a>
+            <a href="login.html" class="nav-btn-gold">Registrarse</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Ponte en <em>Contacto</em></h1>
+        <div class="divider"></div>
+        <p>Tu opinión nos ayuda a perfeccionar cada detalle. Reserva tu mesa o déjanos tus comentarios.</p>
+
+        <div class="contact-wrapper">
+            <div class="contact-info">
+                <h2>Nuestros Datos</h2>
+                
+                <div class="info-item">
+                    <h3>📍 Ubicación</h3>
+                    <p>Calle Falsa 123, Zona Gourmet<br>Medellín, Antioquia</p>
+                </div>
+                
+                <div class="info-item">
+                    <h3>📞 Teléfono</h3>
+                    <p>+57 604 123 4567</p>
+                </div>
+                
+                <div class="info-item">
+                    <h3>📱 WhatsApp</h3>
+                    <p>+57 300 987 6543</p>
+                </div>
+                
+                <div class="info-item">
+                    <h3>✉️ Correo Electrónico</h3>
+                    <p>hablemos@censagourmet.com</p>
+                </div>
+            </div>
+
+            <div class="contact-form-container">
+                <h2>Envíanos un Mensaje</h2>
+                <form id="formContacto">
+                    <div class="input-group">
+                        <label for="nombre">Nombre completo</label>
+                        <input type="text" id="nombre" required placeholder="Ej. Juan Pérez">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="email">Correo electrónico</label>
+                        <input type="email" id="email" required placeholder="tu@correo.com">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="asunto">Asunto</label>
+                        <select id="asunto" required>
+                            <option value="" disabled selected>Selecciona una opción...</option>
+                            <option value="Reserva">Consulta sobre Reserva</option>
+                            <option value="Sugerencia">Sugerencia de mejora</option>
+                            <option value="Critica">Crítica constructiva</option>
+                            <option value="Felicitacion">Felicitaciones al chef</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="mensaje">Tu mensaje</label>
+                        <textarea id="mensaje" rows="4" required placeholder="Escribe aquí tus comentarios..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary btn-submit">Enviar Mensaje</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-brand">✦ Censa <span>Gourmet</span></div>
+        <p>&copy; 2026 Alta Cocina & Experiencia Gourmet. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const supabaseUrl = 'https://xapucgyfhswgudkraeuz.supabase.co';
+            const supabaseKey = 'sb_publishable_tL2gtRtP68PEu0A86Qg2_Q_EeysDviw';
+            const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+            // Manejo del Navbar (Igual que en Index)
+            const { data: { session } } = await supabase.auth.getSession();
+            const nav = document.getElementById('header-nav');
+
+            if (session) {
+                let nombre = localStorage.getItem('nombreUsuario') || 'Usuario';
+                let rol = localStorage.getItem('rolUsuario') || 'cliente';
+
+                if (!localStorage.getItem('rolUsuario')) {
+                    const { data: usuario } = await supabase
+                        .from('usuarios')
+                        .select('nombre, rol')
+                        .eq('id', session.user.id)
+                        .single();
+
+                    if (usuario) {
+                        nombre = usuario.nombre;
+                        rol = usuario.rol;
+                        localStorage.setItem('nombreUsuario', nombre);
+                        localStorage.setItem('rolUsuario', rol);
+                    }
+                }
+
+                const panelesPorRol = {
+                    admin: 'admin.html',
+                    chef: 'chef.html',
+                    mesero: 'mesero.html',
+                    cliente: 'cliente.html'
+                };
+
+                const rutaPanel = panelesPorRol[rol.toLowerCase()] || 'menu.html';
+
+                nav.innerHTML = `
+                    <span class="user-greeting">Bienvenido, <strong>${nombre}</strong></span>
+                    <a href="${rutaPanel}" class="nav-btn-gold">Ir a mi Panel</a>
+                    <button id="btn-cerrar-sesion" class="btn-logout-nav">Cerrar Sesión</button>
+                `;
+
+                document.getElementById('btn-cerrar-sesion').addEventListener('click', async () => {
+                    await supabase.auth.signOut();
+                    localStorage.clear();
+                    window.location.reload();
+                });
+            }
+
+            // Manejo del Formulario de Contacto
+            const form = document.getElementById('formContacto');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const btnSubmit = form.querySelector('.btn-submit');
+                btnSubmit.textContent = 'Enviando...';
+                btnSubmit.disabled = true;
+
+                const nombre = document.getElementById('nombre').value;
+                const email = document.getElementById('email').value;
+                const asunto = document.getElementById('asunto').value;
+                const mensaje = document.getElementById('mensaje').value;
+
+                const { error } = await supabase
+                    .from('contacto')
+                    .insert([{ nombre, email, asunto, mensaje }]);
+
+                if (error) {
+                    alert('Hubo un error al enviar tu mensaje. Inténtalo de nuevo.');
+                    console.error(error);
+                } else {
+                    alert('¡Mensaje enviado con éxito! Gracias por contactarnos.');
+                    form.reset();
+                }
+
+                btnSubmit.textContent = 'Enviar Mensaje';
+                btnSubmit.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>

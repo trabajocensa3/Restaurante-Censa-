@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú - Restaurante Censa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Hojas de estilo: index.css para header/footer y menu.css para el menú -->
+    <link rel="stylesheet" href="../assets/css/index.css">
+    <link rel="stylesheet" href="../assets/css/menu.css">
+</head>
+<body>
+
+    <!-- Encabezado con estado de sesión y navegación -->
+    <header>
+        <div class="logo">
+            <a href="../index.html" style="text-decoration: none; color: inherit;">✦ Censa <span>Gourmet</span></a>
+        </div>
+        
+        <nav class="header-nav" id="header-nav">
+            <a href="../index.html" class="nav-link">← Volver al Inicio</a>
+            <a href="./login.html" class="nav-link">Iniciar Sesión</a>
+            <a href="./login.html" class="nav-btn-gold">Registrarse</a>
+        </nav>
+    </header>
+
+    <!-- Contenido Principal del Menú -->
+    <div class="container" style="min-height: 75vh; padding-top: 20px;">
+        <header class="menu-header">
+            <h1 class="menu-title">Nuestro Menú</h1>
+        </header>
+
+        <!-- Filtros / Categorías Dinámicas desde Supabase -->
+        <section id="subcategories-container" class="subcategories">
+            <div class="subcategory active" data-id="todas">
+                <span class="name">Todas</span>
+            </div>
+        </section>
+
+        <!-- Lista de Platos Dinámicos desde Supabase -->
+        <section id="dishes-container" class="dishes-grid">
+            <p style="grid-column: 1/-1; text-align: center; color: #6b5b3b;">Cargando platillos deliciosos...</p>
+        </section>
+    </div>
+
+    <!-- Pie de Página -->
+    <footer>
+        <div class="footer-brand">✦ Censa <span>Gourmet</span></div>
+        <p>&copy; 2026 Alta Cocina & Experiencia Gourmet. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Script Unificado: Control de Sesión + Carga de Datos Supabase -->
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+        
+        const supabaseUrl = 'https://xapucgyfhswgudkraeuz.supabase.co';
+        const supabaseKey = 'sb_publishable_tL2gtRtP68PEu0A86Qg2_Q_EeysDviw'; 
+        const supabase = createClient(supabaseUrl, supabaseKey);
+
+        let todosLosPlatos = [];
+
+        // 1. Verificar Estado de Sesión del Usuario
+        async function verificarSesion() {
+            const { data: { session } } = await supabase.auth.getSession();
+            const nav = document.getElementById('header-nav');
+
+            if (session) {
+                let nombre = localStorage.getItem('nombreUsuario') || 'Usuario';
+                let rol = localStorage.getItem('rolUsuario') || 'cliente';
+
+                if (!localStorage.getItem('rolUsuario')) {
+                    const { data: usuario } = await supabase
+                        .from('usuarios')
+                        .select('nombre, rol')
+                        .eq('id', session.user.id)
+                        .single();
+
+                    if (usuario) {
+                        nombre = usuario.nombre;
+                        rol = usuario.rol;
+                        localStorage.setItem('nombreUsuario', nombre);
+                        localStorage.setItem('rolUsuario', rol);
+                    }
+                }
+
+                const panelesPorRol = {
+                    admin: './admin.html',
+                    chef: './chef.html',
+                    mesero: './mesero.html',
+                    cliente: './cliente.html'
+                };
+
+                const rutaPanel = panelesPorRol[rol.toLowerCase()] || './cliente.html';
+
+                nav.innerHTML = `
+                    <a href="../index.html" class="nav-link">← Volver al Inicio</a>
+                    <span class="user-greeting">Bienvenido, <strong>${nombre}</strong></span>
+                    <a href="${rutaPanel}" class="nav-btn-gold">Ir a mi Panel</a>
+                    <button id="btn-cerrar-sesion" class="btn-logout-nav">Cerrar Sesión</button>
+                `;
+
+                document.getElementById('btn-cerrar-sesion').addEventListener('click', async () => {
+                    await supabase.auth.signOut();
+                    localStorage.clear();
+                    window.location.reload();
+                });
+            }
+        }
+
+        // 2. Cargar Categorías desde Supabase
+        async function cargarCategorias() {
+            const container = document.getElementById('subcategories-container');
+            const { data: categorias, error } = await supabase.from('categorias').select('*');
+            
+            if (error) {
+                console.error("Error al obtener categorías:", error);
+                return;
+            }
+
+            if (categorias && categorias.length > 0) {
+                categorias.forEach(cat => {
+                    const btn = document.createElement('div');
+                    btn.className = 'subcategory';
+                    btn.dataset.id = cat.id;
+                    btn.innerHTML = `<span class="name">${cat.nombre}</span>`;
+                    
+                    btn.addEventListener('click', () => filtrarPlatos(cat.id, btn));
+                    container.appendChild(btn);
+                });
+            }
+        }
+
+        // 3. Cargar Platos Disponibles desde Supabase
+        async function cargarPlatos() {
+            const container = document.getElementById('dishes-container');
+            const { data: platos, error } = await supabase
+                .from('platos')
+                .select('*, categorias(nombre)')
+                .eq('disponible', true);
+
+            if (error) {
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: red;">Error al cargar el menú.</p>';
+                return;
+            }
+
+            todosLosPlatos = platos || [];
+            renderizarPlatos(todosLosPlatos);
+        }
+
+        // 4. Renderizar Platos
+        function renderizarPlatos(lista) {
+            const container = document.getElementById('dishes-container');
+            container.innerHTML = '';
+
+            if (lista.length === 0) {
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #6b5b3b;">No hay platos disponibles en esta categoría.</p>';
+                return;
+            }
+
+            lista.forEach(plato => {
+                const badgeFit = plato.saludable ? '<span class="badge-fit">🍃 Fit</span>' : '';
+                const card = `
+                    <article class="dish-card">
+                        <div class="dish-img-container">
+                            <img src="${plato.imagen || 'https://via.placeholder.com/300'}" alt="${plato.nombre}" class="dish-img">
+                            ${badgeFit}
+                        </div>
+                        <div class="dish-content">
+                            <div class="dish-header">
+                                <h3 class="dish-title">${plato.nombre}</h3>
+                                <span class="dish-price">$${plato.precio.toLocaleString()}</span>
+                            </div>
+                            <p class="dish-desc">${plato.descripcion || 'Sin descripción disponible.'}</p>
+                        </div>
+                    </article>
+                `;
+                container.innerHTML += card;
+            });
+        }
+
+        // 5. Filtrar por Categoría
+        function filtrarPlatos(categoriaId, elementoBtn) {
+            document.querySelectorAll('.subcategory').forEach(btn => btn.classList.remove('active'));
+            elementoBtn.classList.add('active');
+
+            if (categoriaId === 'todas') {
+                renderizarPlatos(todosLosPlatos);
+            } else {
+                const filtrados = todosLosPlatos.filter(p => p.categoria_id === categoriaId);
+                renderizarPlatos(filtrados);
+            }
+        }
+
+        document.querySelector('.subcategory[data-id="todas"]').addEventListener('click', function() {
+            filtrarPlatos('todas', this);
+        });
+
+        // Inicializar funciones al cargar el documento
+        document.addEventListener('DOMContentLoaded', () => {
+            verificarSesion();
+            cargarCategorias();
+            cargarPlatos();
+        });
+    </script>
+</body>
+</html>
