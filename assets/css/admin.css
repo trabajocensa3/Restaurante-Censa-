@@ -1,0 +1,286 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+    color: #f5f0e8;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- HEADER --- */
+header {
+    position: relative;
+    z-index: 2;
+    padding: 18px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+    background: rgba(15, 15, 15, 0.9);
+    backdrop-filter: blur(10px);
+}
+
+.logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #d4af37;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo span {
+    color: #ff5555;
+    font-size: 0.75rem;
+    background: rgba(255, 85, 85, 0.15);
+    border: 1px solid rgba(255, 85, 85, 0.4);
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.admin-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.btn-logout {
+    background: transparent;
+    border: 1px solid rgba(255, 85, 85, 0.5);
+    color: #ff8080;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-logout:hover {
+    background: rgba(255, 85, 85, 0.2);
+    color: #ffffff;
+}
+
+/* --- MAIN CONTAINER --- */
+.admin-container {
+    max-width: 1300px;
+    margin: 30px auto;
+    padding: 0 20px;
+    width: 100%;
+    flex: 1;
+}
+
+/* NAV PESTAÑAS (TABS) */
+.admin-tabs {
+    display: flex;
+    gap: 10px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    margin-bottom: 30px;
+    overflow-x: auto;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: #b8b0a0;
+    padding: 12px 24px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.tab-btn:hover {
+    color: #d4af37;
+}
+
+.tab-btn.active {
+    color: #d4af37;
+    border-bottom-color: #d4af37;
+    background: rgba(212, 175, 55, 0.05);
+}
+
+/* SECCIONES Y CONTENIDO DE PESTAÑAS */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* LAYOUT CON FORMULARIO Y TABLA */
+.section-grid {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 30px;
+}
+
+.card-box {
+    background: rgba(20, 20, 20, 0.7);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 8px;
+    padding: 25px;
+    backdrop-filter: blur(5px);
+}
+
+.card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    color: #d4af37;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+    padding-bottom: 10px;
+}
+
+/* FORMULARIOS */
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #b8b0a0;
+    margin-bottom: 6px;
+}
+
+.form-control {
+    width: 100%;
+    background: rgba(10, 10, 10, 0.8);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    color: #f5f0e8;
+    padding: 10px 12px;
+    border-radius: 4px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.form-control:focus {
+    border-color: #d4af37;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.checkbox-group input {
+    accent-color: #d4af37;
+    width: 18px;
+    height: 18px;
+}
+
+.btn-primary {
+    width: 100%;
+    background: linear-gradient(135deg, #d4af37 0%, #f5d76e 50%, #d4af37 100%);
+    color: #0f0f0f;
+    border: none;
+    padding: 12px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+}
+
+/* TABLAS ESTILIZADAS */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.88rem;
+}
+
+.admin-table th {
+    background: rgba(212, 175, 55, 0.1);
+    color: #d4af37;
+    padding: 14px;
+    border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+}
+
+.admin-table td {
+    padding: 14px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+    color: #f5f0e8;
+}
+
+.admin-table tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* ACCIONES DE TABLA */
+.btn-action {
+    background: transparent;
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    color: #d4af37;
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.btn-action:hover {
+    background: #d4af37;
+    color: #0f0f0f;
+}
+
+.btn-delete {
+    border-color: rgba(231, 76, 60, 0.5);
+    color: #e74c3c;
+}
+
+.btn-delete:hover {
+    background: #e74c3c;
+    color: #ffffff;
+}
+
+/* FOOTER */
+footer {
+    padding: 20px;
+    text-align: center;
+    background: rgba(10, 10, 10, 0.95);
+    border-top: 1px solid rgba(212, 175, 55, 0.2);
+    font-size: 0.8rem;
+    color: #b8b0a0;
+    margin-top: auto;
+}
+
+@media (max-width: 950px) {
+    .section-grid {
+        grid-template-columns: 1fr;
+    }
+}

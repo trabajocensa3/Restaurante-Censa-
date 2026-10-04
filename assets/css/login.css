@@ -1,0 +1,472 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: linear-gradient(135deg, #0c0c0c 0%, #171717 50%, #0c0c0c 100%);
+    color: #f5f0e8;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Fondo sutil con resplandor dorado */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0; 
+    left: 0; 
+    right: 0; 
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 15% 20%, rgba(212, 175, 55, 0.07) 0%, transparent 45%),
+        radial-gradient(circle at 85% 80%, rgba(212, 175, 55, 0.07) 0%, transparent 45%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ===== ENCABEZADO (HEADER) ===== */
+.header {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+    background: rgba(15, 15, 15, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 10px;
+}
+
+.logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #f5f0e8;
+    text-decoration: none;
+    letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: color 0.3s ease;
+}
+
+.logo .star {
+    color: #d4af37;
+    font-size: 1.2rem;
+}
+
+.logo:hover {
+    color: #d4af37;
+}
+
+.btn-volver {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #d4af37;
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+    padding: 8px 18px;
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.btn-volver:hover {
+    background: rgba(212, 175, 55, 0.15);
+    border-color: #d4af37;
+    transform: translateX(-3px);
+}
+
+/* ===== CONTENIDO PRINCIPAL ===== */
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    max-width: 900px;
+    width: 100%;
+}
+
+/* ===== ESTRUCTURA PESTAÑAS / VENTANA ===== */
+.form-card-wrapper {
+    max-width: 480px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.tab-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 10px;
+    background: rgba(20, 20, 20, 0.5);
+    padding: 6px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #aaa;
+    padding: 10px 16px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.tab-btn.active {
+    background: #d4af37;
+    color: #111;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.card-panel {
+    display: none;
+}
+
+.card-panel.active {
+    display: block;
+    animation: fadeIn 0.35s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== TARJETAS ===== */
+.card {
+    background: rgba(26, 26, 26, 0.85);
+    backdrop-filter: blur(12px);
+    padding: 45px 40px;
+    border-radius: 6px;
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(212, 175, 55, 0.1);
+    transition: all 0.4s ease;
+}
+
+.card:hover { 
+    border-color: rgba(212, 175, 55, 0.55); 
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7), 0 0 20px rgba(212, 175, 55, 0.1);
+}
+
+h2 {
+    font-family: 'Cormorant Garamond', serif;
+    color: #d4af37;
+    text-align: center;
+    font-size: 2.1rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 45px;
+    height: 1px;
+    background: #d4af37;
+}
+
+/* ===== FORMULARIO ===== */
+.form-group { 
+    margin-bottom: 22px; 
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #b8b0a0;
+    font-weight: 500;
+}
+
+input {
+    width: 100%;
+    padding: 13px 16px;
+    background: rgba(12, 12, 12, 0.7);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 3px;
+    color: #f5f0e8;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+input::placeholder {
+    color: #555;
+}
+
+input:focus {
+    outline: none;
+    border-color: #d4af37;
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.25);
+    background: rgba(15, 15, 15, 0.9);
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    background: #d4af37;
+    color: #0c0c0c;
+    border: 1px solid #d4af37;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 10px;
+    transition: all 0.4s ease;
+}
+
+button:hover {
+    background: transparent;
+    color: #d4af37;
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.3);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ===== BLOQUE PROMOCIONAL Y NAVEGACIÓN ENTRE PESTAÑAS ===== */
+.login-welcome-info {
+    margin-top: 25px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.85rem;
+    color: #bbb;
+    line-height: 1.6;
+}
+
+.login-welcome-info ul {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+}
+
+.login-welcome-info li {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.login-welcome-info li span {
+    color: #d4af37;
+}
+
+.switch-tab-link {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 0.88rem;
+    color: #ccc;
+}
+
+.switch-tab-link a {
+    color: #d4af37;
+    font-weight: 500;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* ===== PIE DE PÁGINA (FOOTER) ===== */
+.footer {
+    position: relative;
+    z-index: 10;
+    background: rgba(12, 12, 12, 0.9);
+    border-top: 1px solid rgba(212, 175, 55, 0.15);
+    padding: 25px 20px;
+    text-align: center;
+}
+
+.footer-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    color: #d4af37;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+
+.footer p {
+    font-size: 0.75rem;
+    color: #888;
+    letter-spacing: 1px;
+}
+
+/* ===== NOTIFICACIONES TOAST ===== */
+#notificacion {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: none;
+    max-width: calc(100% - 60px);
+}
+
+.toast {
+    background: rgba(25, 25, 25, 0.95);
+    backdrop-filter: blur(15px);
+    border: 1px solid #d4af37;
+    border-left: 3px solid #d4af37;
+    color: #f5f0e8;
+    padding: 18px 22px;
+    border-radius: 4px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(212, 175, 55, 0.15);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    line-height: 1.5;
+    min-width: 260px;
+    max-width: 380px;
+    animation: entrar 0.4s ease forwards;
+    pointer-events: auto;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.toast.saliendo { 
+    animation: salir 0.4s ease forwards; 
+}
+
+.toast .icono-toast {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.toast .texto-toast { 
+    flex: 1; 
+}
+
+.toast .titulo-toast {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #d4af37;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.toast.error { 
+    border-color: #ff5555; 
+    border-left-color: #ff5555; 
+}
+
+.toast.error .titulo-toast { 
+    color: #ff8080; 
+}
+
+.toast.exito { 
+    border-color: #d4af37; 
+    border-left-color: #d4af37; 
+}
+
+.toast.info { 
+    border-color: #64b4ff; 
+    border-left-color: #64b4ff; 
+}
+
+.toast.info .titulo-toast { 
+    color: #64b4ff; 
+}
+
+@keyframes entrar {
+    from { opacity: 0; transform: translateX(60px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes salir {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(60px); }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .header {
+        padding: 15px 20px;
+    }
+
+    .header-container {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .main-content {
+        padding: 30px 15px;
+    }
+
+    .card { 
+        padding: 35px 25px; 
+    }
+
+    h2 { 
+        font-size: 1.7rem; 
+    }
+
+    #notificacion {
+        top: 15px;
+        right: 15px;
+        left: 15px;
+        max-width: none;
+    }
+
+    .toast { 
+        font-size: 0.8rem; 
+        padding: 14px 18px; 
+    }
+}
