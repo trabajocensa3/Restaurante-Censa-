@@ -1,0 +1,395 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+    color: #f5f0e8;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.05) 0%, transparent 40%),
+                      radial-gradient(circle at 90% 80%, rgba(212, 175, 55, 0.05) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* --- HEADER / NAVBAR --- */
+header {
+    position: relative;
+    z-index: 2;
+    padding: 20px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    background: rgba(15, 15, 15, 0.8);
+    backdrop-filter: blur(10px);
+}
+
+.logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #d4af37;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo span {
+    color: #f5f0e8;
+    font-weight: 400;
+    font-style: italic;
+}
+
+.user-nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.user-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+}
+
+.user-badge-icon {
+    color: #d4af37;
+}
+
+.btn-logout {
+    background: transparent;
+    border: 1px solid rgba(255, 85, 85, 0.5);
+    color: #ff8080;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-logout:hover {
+    background: rgba(255, 85, 85, 0.15);
+    border-color: #ff5555;
+    color: #ffffff;
+}
+
+/* --- CONTENEDOR PRINCIPAL --- */
+.dashboard-container {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    width: 100%;
+    flex: 1;
+}
+
+/* Welcome Banner */
+.welcome-banner {
+    background: rgba(25, 25, 25, 0.6);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    border-radius: 8px;
+    padding: 30px;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.welcome-text h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem;
+    color: #f5f0e8;
+    margin-bottom: 5px;
+}
+
+.welcome-text h1 span {
+    color: #d4af37;
+}
+
+.welcome-text p {
+    color: #b8b0a0;
+    font-size: 0.95rem;
+}
+
+.quick-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-gold-outline {
+    border: 1px solid #d4af37;
+    color: #d4af37;
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+
+.btn-gold-outline:hover {
+    background: #d4af37;
+    color: #0f0f0f;
+}
+
+/* GRID DEL DASHBOARD */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 30px;
+}
+
+/* --- CARDS Y FORMULARIOS --- */
+.card-box {
+    background: rgba(20, 20, 20, 0.7);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 8px;
+    padding: 30px;
+    backdrop-filter: blur(5px);
+}
+
+.card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    color: #d4af37;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+    padding-bottom: 12px;
+}
+
+/* Formulario de Reserva */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #b8b0a0;
+    margin-bottom: 8px;
+}
+
+.form-control {
+    width: 100%;
+    background: rgba(10, 10, 10, 0.8);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    color: #f5f0e8;
+    padding: 12px 15px;
+    border-radius: 4px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #d4af37;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.btn-submit-reservation {
+    width: 100%;
+    background: linear-gradient(135deg, #d4af37 0%, #f5d76e 50%, #d4af37 100%);
+    color: #0f0f0f;
+    border: none;
+    padding: 14px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-submit-reservation:hover {
+    box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+    transform: translateY(-2px);
+}
+
+/* --- TARJETAS DE RESERVAS ACTIVAS --- */
+.reservation-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.reservation-card {
+    background: rgba(10, 10, 10, 0.6);
+    border-left: 4px solid #d4af37;
+    border-top: 1px solid rgba(212, 175, 55, 0.15);
+    border-right: 1px solid rgba(212, 175, 55, 0.15);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+    border-radius: 4px;
+    padding: 20px;
+    transition: transform 0.3s ease;
+}
+
+.reservation-card:hover {
+    transform: translateX(4px);
+}
+
+.reservation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.reservation-date {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    color: #f5f0e8;
+    font-weight: 600;
+}
+
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.status-badge.confirmada {
+    background: rgba(46, 204, 113, 0.2);
+    color: #2ecc71;
+    border: 1px solid rgba(46, 204, 113, 0.4);
+}
+
+.status-badge.pendiente {
+    background: rgba(241, 196, 15, 0.2);
+    color: #f1c40f;
+    border: 1px solid rgba(241, 196, 15, 0.4);
+}
+
+.status-badge.cancelada {
+    background: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+    border: 1px solid rgba(231, 76, 60, 0.4);
+}
+
+.reservation-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+    font-size: 0.85rem;
+    color: #b8b0a0;
+}
+
+.reservation-details div span {
+    display: block;
+    color: #f5f0e8;
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+.reservation-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    border-top: 1px dashed rgba(212, 175, 55, 0.15);
+    padding-top: 12px;
+}
+
+.btn-cancel {
+    background: transparent;
+    border: 1px solid rgba(231, 76, 60, 0.6);
+    color: #e74c3c;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+    background: rgba(231, 76, 60, 0.2);
+}
+
+/* Estalar cuando no hay reservas */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #b8b0a0;
+}
+
+.empty-state-icon {
+    font-size: 2.5rem;
+    color: rgba(212, 175, 55, 0.4);
+    margin-bottom: 10px;
+}
+
+/* --- FOOTER --- */
+footer {
+    position: relative;
+    z-index: 2;
+    padding: 25px;
+    text-align: center;
+    background: rgba(10, 10, 10, 0.95);
+    border-top: 1px solid rgba(212, 175, 55, 0.2);
+    margin-top: auto;
+    font-size: 0.8rem;
+    color: #b8b0a0;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 900px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .welcome-banner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

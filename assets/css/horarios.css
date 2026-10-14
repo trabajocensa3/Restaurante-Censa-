@@ -1,0 +1,199 @@
+/* ==========================================================
+   ESTILOS DE HORARIOS - RESTAURANTE CENSA (DARK LUXURY)
+   ========================================================== */
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 30px 20px 60px;
+    position: relative;
+    z-index: 2;
+    flex: 1;
+}
+
+/* Header de la Sección */
+.horarios-header {
+    text-align: center;
+    padding: 20px 0 15px;
+}
+
+.horarios-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, #d4af37 0%, #f5d76e 50%, #d4af37 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+}
+
+.horarios-subtitle {
+    font-size: 1rem;
+    color: #b8b0a0;
+    font-weight: 300;
+    letter-spacing: 1.5px;
+}
+
+/* Indicador en Vivo (Status Widget) */
+.status-badge-container {
+    display: flex;
+    justify-content: center;
+    margin: 25px 0 35px;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+/* Estado Abierto */
+.status-badge.open {
+    background: rgba(46, 204, 113, 0.12);
+    border: 1px solid rgba(46, 204, 113, 0.5);
+    color: #2ecc71;
+    box-shadow: 0 0 15px rgba(46, 204, 113, 0.2);
+}
+
+.status-badge.open .status-dot {
+    width: 10px;
+    height: 10px;
+    background-color: #2ecc71;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #2ecc71;
+    animation: pulse-green 2s infinite;
+}
+
+/* Estado Cerrado */
+.status-badge.closed {
+    background: rgba(231, 76, 60, 0.12);
+    border: 1px solid rgba(231, 76, 60, 0.5);
+    color: #e74c3c;
+    box-shadow: 0 0 15px rgba(231, 76, 60, 0.15);
+}
+
+.status-badge.closed .status-dot {
+    width: 10px;
+    height: 10px;
+    background-color: #e74c3c;
+    border-radius: 50%;
+}
+
+@keyframes pulse-green {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(46, 204, 113, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+}
+
+/* Tarjeta Contenedora de Horarios */
+.horarios-card {
+    background: rgba(20, 20, 20, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    border-radius: 12px;
+    padding: 10px 25px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+}
+
+/* Filas de los días */
+.horario-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 15px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+    transition: all 0.3s ease;
+    border-radius: 6px;
+}
+
+.horario-row:last-child {
+    border-bottom: none;
+}
+
+.horario-row:hover {
+    background: rgba(212, 175, 55, 0.05);
+}
+
+/* Resaltado del Día Actual */
+.horario-row.is-today {
+    background: rgba(212, 175, 55, 0.12);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+}
+
+.dia-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.dia-nombre {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #f5f0e8;
+}
+
+.tag-hoy {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    background: #d4af37;
+    color: #0f0f0f;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.hora-rango {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    color: #d4af37;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.hora-cerrado {
+    color: #e74c3c;
+    font-size: 0.95rem;
+    font-style: italic;
+    font-weight: 500;
+}
+
+/* Call to Action (Llamado a la Acción) */
+.horarios-cta {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.horarios-cta p {
+    color: #b8b0a0;
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+}
+
+/* Responsivo */
+@media (max-width: 600px) {
+    .horarios-title { font-size: 2.3rem; }
+    .horario-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .hora-rango {
+        align-self: flex-end;
+    }
+}

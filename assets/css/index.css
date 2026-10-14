@@ -1,0 +1,465 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+    color: #f5f0e8;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.06) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.06) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* --- HEADER Y NAVEGACIÓN --- */
+header {
+    position: relative;
+    z-index: 2;
+    padding: 25px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    flex-wrap: wrap;
+    gap: 15px;
+    background: rgba(15, 15, 15, 0.6);
+    backdrop-filter: blur(10px);
+}
+
+.logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #d4af37;
+    letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo span {
+    color: #f5f0e8;
+    font-weight: 400;
+    font-style: italic;
+}
+
+.header-nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.header-nav a {
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.nav-link, 
+.nav-link:visited {
+    color: #f5f0e8;
+}
+
+.nav-link:hover {
+    color: #d4af37;
+}
+
+.nav-btn-gold, 
+.nav-btn-gold:visited {
+    color: #0f0f0f;
+    background: #d4af37;
+    padding: 8px 18px;
+    border-radius: 2px;
+    font-weight: 600;
+}
+
+.nav-btn-gold:hover {
+    background: #f5d76e;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+}
+
+/* --- ESTILOS DE USUARIO Y CERRAR SESIÓN EN NAVBAR --- */
+.user-greeting {
+    color: #d4af37;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-right: 10px;
+}
+
+.btn-logout-nav {
+    background: transparent;
+    border: 1px solid rgba(212, 175, 55, 0.5);
+    color: #f5f0e8;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-logout-nav:hover {
+    background: rgba(255, 85, 85, 0.2);
+    border-color: #ff5555;
+    color: #ff8080;
+}
+
+/* --- SECCIÓN HERO --- */
+.hero {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 100px 20px 80px;
+    max-width: 1000px;
+    margin: 0 auto;
+    flex: 1;
+}
+
+.hero::before {
+    content: '✦';
+    display: block;
+    color: #d4af37;
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    letter-spacing: 15px;
+}
+
+.hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4.5rem;
+    font-weight: 600;
+    margin-bottom: 25px;
+    line-height: 1.1;
+    color: #f5f0e8;
+    letter-spacing: 1px;
+}
+
+.hero h1 em {
+    color: #d4af37;
+    font-style: italic;
+}
+
+.hero p {
+    font-size: 1.1rem;
+    color: #b8b0a0;
+    font-weight: 300;
+    letter-spacing: 2px;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.8;
+}
+
+.divider {
+    width: 80px;
+    height: 1px;
+    background: #d4af37;
+    margin: 35px auto;
+    position: relative;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    width: 5px;
+    height: 5px;
+    background: #d4af37;
+    border-radius: 50%;
+}
+
+.divider::before { left: -10px; }
+.divider::after { right: -10px; }
+
+/* --- BOTONES DEL HERO --- */
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 45px;
+    flex-wrap: wrap;
+}
+
+.hero-buttons a,
+.hero-buttons a:visited {
+    position: relative;
+    text-decoration: none;
+    padding: 16px 32px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.4s ease;
+    overflow: hidden;
+    border-radius: 2px;
+    min-width: 180px;
+    text-align: center;
+}
+
+.hero-buttons a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+    transition: left 0.6s ease;
+}
+
+.hero-buttons a:hover::before {
+    left: 100%;
+}
+
+.btn-primary,
+.btn-primary:visited {
+    background: linear-gradient(135deg, #d4af37 0%, #f5d76e 50%, #d4af37 100%);
+    color: #0f0f0f;
+    border: 2px solid #d4af37;
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.25);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 45px rgba(212, 175, 55, 0.6);
+}
+
+.btn-secondary,
+.btn-secondary:visited {
+    background: transparent;
+    color: #d4af37;
+    border: 2px solid #d4af37;
+}
+
+.btn-secondary:hover {
+    background: #d4af37;
+    color: #0f0f0f;
+    transform: translateY(-3px);
+    box-shadow: 0 15px 45px rgba(212, 175, 55, 0.5);
+}
+
+/* --- ESTILOS DEL FOOTER --- */
+footer {
+    position: relative;
+    z-index: 2;
+    padding: 35px 20px;
+    text-align: center;
+    background: rgba(10, 10, 10, 0.95);
+    border-top: 1px solid rgba(212, 175, 55, 0.3);
+    backdrop-filter: blur(10px);
+    margin-top: auto;
+    width: 100%;
+}
+
+.footer-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #d4af37;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+
+.footer-brand span {
+    color: #f5f0e8;
+    font-weight: 400;
+    font-style: italic;
+}
+
+footer p {
+    font-size: 0.8rem;
+    color: #b8b0a0;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 300;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+    header {
+        padding: 20px 25px;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .logo { font-size: 1.4rem; }
+
+    .hero {
+        padding: 60px 20px 50px;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero p {
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 35px;
+    }
+
+    .hero-buttons a {
+        width: 100%;
+        max-width: 320px;
+    }
+}
+/* ========================================= */
+/* ESTILOS PARA EL CHAT DE INTELIGENCIA IA   */
+/* ========================================= */
+
+.chat-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #D4AF37; /* Color dorado del restaurante */
+    color: white;
+    font-size: 30px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+.chat-toggle:hover {
+    transform: scale(1.1);
+}
+
+.chat-container {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 350px;
+    height: 450px;
+    background-color: #1a1a1a;
+    border: 1px solid #D4AF37;
+    border-radius: 10px;
+    display: none; /* Oculto por defecto */
+    flex-direction: column;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.chat-header {
+    background-color: #D4AF37;
+    color: #111;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Cormorant Garamond', serif;
+}
+
+.chat-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.chat-header button {
+    background: none;
+    border: none;
+    color: #111;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: #f9f9f9;
+}
+
+.message {
+    padding: 10px 15px;
+    border-radius: 15px;
+    max-width: 80%;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.message.bot {
+    background-color: #e0e0e0;
+    color: #333;
+    align-self: flex-start;
+    border-bottom-left-radius: 2px;
+}
+
+.message.user {
+    background-color: #D4AF37;
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 2px;
+}
+
+.message.loading {
+    font-style: italic;
+    color: #888;
+}
+
+.chat-input {
+    display: flex;
+    padding: 10px;
+    background-color: #fff;
+    border-top: 1px solid #ddd;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.chat-input button {
+    background-color: #111;
+    color: #D4AF37;
+    border: none;
+    padding: 10px 15px;
+    margin-left: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.chat-input button:hover {
+    background-color: #333;
+}
