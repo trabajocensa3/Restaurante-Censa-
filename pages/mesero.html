@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Mesero | Censa Gourmet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/mesero.css">
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header>
+        <a href="../index.html" class="logo">✦ Censa <span>Gourmet</span></a>
+        
+        <div class="user-nav">
+            <div class="user-badge">
+                <span>🤵🏻‍♂️ Mesero:</span>
+                <span id="user-name-display">Cargando...</span>
+            </div>
+            <button id="btn-logout" class="btn-logout">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="dashboard-container">
+        
+        <div class="dashboard-grid">
+
+            <!-- Columna Izquierda: Crear Comanda -->
+            <section class="card-box">
+                <h2 class="card-title">📝 Nueva Comanda</h2>
+
+                <div class="form-group">
+                    <label for="select-mesa">Seleccionar Mesa</label>
+                    <select id="select-mesa" class="form-control">
+                        <option value="">Cargando mesas...</option>
+                    </select>
+                </div>
+
+                <div class="obs-block">
+                    <label style="color: #d4af37; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 10px;">
+                        2. Observaciones de la Mesa para el Chef
+                    </label>
+
+                    <div class="obs-grid">
+                        <div class="obs-item">
+                            <label for="input-celebracion">🎉 ¿Celebración Especial?</label>
+                            <input type="text" id="input-celebracion" class="form-control" placeholder="Ej: Cumpleaños, Aniversario o N/A" value="N/A">
+                        </div>
+
+                        <div class="obs-item">
+                            <label for="input-alergias">⚠️ ¿Alergias / Restricciones?</label>
+                            <input type="text" id="input-alergias" class="form-control" placeholder="Ej: Mariscos, Glutén, Lactosa o N/A" value="N/A">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>3. Añadir Platos a la Comanda</label>
+                    <div id="platos-container" class="platos-grid">
+                        <p style="color: #888; font-size: 0.85rem;">Cargando platos del menú...</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>4. Resumen de la Orden</label>
+                    <div class="ticket-container">
+                        <table class="ticket-table">
+                            <thead>
+                                <tr>
+                                    <th>Plato</th>
+                                    <th style="text-align: center;">Cant.</th>
+                                    <th style="text-align: right;">Precio</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="ticket-body">
+                                <tr>
+                                    <td colspan="4" style="text-align: center; color: #666; padding: 15px;">
+                                        No hay platos agregados a esta comanda.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="ticket-total">
+                            <span>TOTAL A PAGAR:</span>
+                            <span id="ticket-total-val">$0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="btn-enviar-comanda" class="btn-send-chef" disabled>
+                    👨‍🍳 Enviar Comanda al Chef
+                </button>
+            </section>
+
+            <!-- Columna Derecha: Comandas Enviadas / Estado de Cocina -->
+            <section class="card-box">
+                <h2 class="card-title">🍳 Estado de Comandas</h2>
+
+                <div id="comandas-activas-container" class="comandas-list">
+                    <p style="text-align: center; color: #888; padding: 20px;">Cargando comandas...</p>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Modal para Capturar Datos del Cliente -->
+    <div id="modal-factura" class="modal-factura">
+        <div class="modal-content">
+            <h3>✦ Generar Factura</h3>
+            <p style="font-size: 0.8rem; margin-bottom: 15px; color: #aaa; text-align: center;">Ingrese los datos de facturación del cliente:</p>
+            
+            <div class="form-group-modal">
+                <label for="factura-nombre">Nombre del Cliente</label>
+                <input type="text" id="factura-nombre" placeholder="Ej: Carlos Pérez" value="Cliente Ocasional">
+            </div>
+
+            <div class="form-group-modal">
+                <label for="factura-doc">Cédula o NIT</label>
+                <input type="text" id="factura-doc" placeholder="Ej: 1020304050" value="N/A">
+            </div>
+
+            <div class="form-group-modal">
+                <label for="factura-correo">Correo Electrónico (Para envío virtual)</label>
+                <input type="email" id="factura-correo" placeholder="cliente@correo.com" value="N/A">
+            </div>
+
+            <div class="form-group-modal">
+                <label for="metodo-pago">Método de Pago</label>
+                <select id="metodo-pago" onchange="cambiarMetodoPago()">
+                    <option value="Efectivo">Efectivo</option>
+                    <option value="Tarjeta de Crédito/Débito">Tarjeta de Crédito / Débito</option>
+                    <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+                </select>
+            </div>
+
+            <!-- Campo dinámico para Código de Aprobación o Transferencia -->
+            <div class="form-group-modal" id="group-ref-pago" style="display: none;">
+                <label for="factura-ref-pago" id="label-ref-pago">Nº de Aprobación / Voucher</label>
+                <input type="text" id="factura-ref-pago" placeholder="Ej: 482901">
+            </div>
+
+            <button class="btn-facturar-modal" onclick="procesarFacturacion()">Emitir Factura y Ver Ticket</button>
+            <button class="btn-cerrar-modal" onclick="cerrarModalFactura()">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- Modal Visor del Ticket Oficial de Venta -->
+    <div id="modal-ticket" class="ticket-modal">
+        <div class="ticket-receipt">
+            <h2>✦ CENSA GOURMET ✦</h2>
+            <p style="font-size: 0.75rem;">NIT: 900.123.456-7<br>Medellín, Colombia</p>
+            <hr>
+            <div id="ticket-detalle-contenido" class="ticket-info">
+                <!-- Se llena dinámicamente con JS -->
+            </div>
+            <hr>
+            <p style="font-size: 0.75rem; text-align: center;">¡Gracias por su visita!<br>Factura electrónica generada con éxito.</p>
+            <button class="btn-imprimir" onclick="cerrarTicketVisual()">Aceptar / Continuar</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Censa Gourmet. Módulo de Atención y Servicio.</p>
+    </footer>
+
+    <!-- Supabase JS Module -->
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+        const supabaseUrl = 'https://xapucgyfhswgudkraeuz.supabase.co';
+        const supabaseKey = 'sb_publishable_tL2gtRtP68PEu0A86Qg2_Q_EeysDviw';
+        const supabase = createClient(supabaseUrl, supabaseKey);
+
+        let currentUser = null;
+        let comandaActual = [];
+        let comandaSeleccionadaId = null;
+        let comandaSeleccionadaTotal = 0;
+        let mesaSeleccionadaNum = null;
+        let comandaSeleccionadaDetalles = [];
+        let nombreMeseroActual = '';
+
+        function formatearMoneda(valor) {
+            return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(valor);
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) { window.location.href = './login.html'; return; }
+
+            currentUser = session.user;
+            let nombre = localStorage.getItem('nombreUsuario');
+            if (!nombre) {
+                const { data: perfil } = await supabase.from('usuarios').select('nombre').eq('id', currentUser.id).single();
+                nombre = (perfil && perfil.nombre) ? perfil.nombre : currentUser.email.split('@')[0];
+            }
+
+            nombreMeseroActual = nombre;
+            document.getElementById('user-name-display').textContent = nombre;
+
+            await cargarMesas();
+            await cargarPlatos();
+            await cargarComandasActivas();
+
+            document.getElementById('select-mesa').addEventListener('change', autoCargarNotasReserva);
+
+            supabase.channel('realtime_comandas')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'comandas' }, () => { cargarComandasActivas(); })
+                .subscribe();
+        });
+
+        document.getElementById('btn-logout').addEventListener('click', async () => {
+            await supabase.auth.signOut();
+            localStorage.clear();
+            window.location.href = '../index.html';
+        });
+
+        async function cargarMesas() {
+            const select = document.getElementById('select-mesa');
+            const { data: mesas } = await supabase.from('mesas').select('*').order('numero', { ascending: true });
+            if (!mesas) return;
+            select.innerHTML = '<option value="">-- Seleccionar Mesa --</option>';
+            mesas.forEach(mesa => {
+                const opt = document.createElement('option');
+                opt.value = mesa.id;
+                opt.textContent = `Mesa #${mesa.numero} (${mesa.ubicacion} | Cap: ${mesa.capacidad}p)`;
+                select.appendChild(opt);
+            });
+        }
+
+        async function autoCargarNotasReserva() {
+            const mesaId = document.getElementById('select-mesa').value;
+            const inputCel = document.getElementById('input-celebracion');
+            const inputAlergia = document.getElementById('input-alergias');
+            if (!mesaId) { inputCel.value = "N/A"; inputAlergia.value = "N/A"; actualizarBotonEnvio(); return; }
+
+            const hoy = new Date().toISOString().split('T')[0];
+            const { data: reserva } = await supabase.from('reservas').select('notas').eq('mesa_id', mesaId).eq('fecha', hoy).neq('estado', 'cancelada').maybeSingle();
+
+            if (reserva && reserva.notas) {
+                inputCel.value = reserva.notas.toLowerCase().includes('cumple') ? reserva.notas : "N/A";
+                inputAlergia.value = reserva.notas.toLowerCase().includes('alerg') ? reserva.notas : reserva.notas;
+            } else {
+                inputCel.value = "N/A"; inputAlergia.value = "N/A";
+            }
+            actualizarBotonEnvio();
+        }
+
+        async function cargarPlatos() {
+            const contenedor = document.getElementById('platos-container');
+            const { data: platos } = await supabase.from('platos').select('*').eq('disponible', true).order('nombre', { ascending: true });
+            if (!platos) return;
+            contenedor.innerHTML = '';
+            platos.forEach(plato => {
+                const card = document.createElement('div');
+                card.className = 'plato-item-card';
+                card.innerHTML = `<div class="plato-nombre">${plato.nombre}</div><div class="plato-precio">${formatearMoneda(plato.precio)}</div>`;
+                card.addEventListener('click', () => agregarPlatoAComanda(plato));
+                contenedor.appendChild(card);
+            });
+        }
+
+        function agregarPlatoAComanda(plato) {
+            const existe = comandaActual.find(item => item.plato_id === plato.id);
+            if (existe) existe.cantidad += 1;
+            else comandaActual.push({ plato_id: plato.id, nombre: plato.nombre, precio: plato.precio, cantidad: 1 });
+            renderizarTicket();
+        }
+
+        function renderizarTicket() {
+            const tbody = document.getElementById('ticket-body');
+            const totalDisplay = document.getElementById('ticket-total-val');
+            if (comandaActual.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #666; padding: 15px;">No hay platos agregados.</td></tr>`;
+                totalDisplay.textContent = formatearMoneda(0);
+                actualizarBotonEnvio();
+                return;
+            }
+
+            tbody.innerHTML = '';
+            let total = 0;
+            comandaActual.forEach((item, index) => {
+                const subtotal = item.precio * item.cantidad;
+                total += subtotal;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><div><strong>${item.nombre}</strong></div></td>
+                    <td style="text-align: center;">
+                        <button class="qty-btn" onclick="modificarCantidad(${index}, -1)">-</button>
+                        <span style="margin: 0 6px;">${item.cantidad}</span>
+                        <button class="qty-btn" onclick="modificarCantidad(${index}, 1)">+</button>
+                    </td>
+                    <td style="text-align: right;">${formatearMoneda(subtotal)}</td>
+                    <td style="text-align: right;"><button class="btn-remove" onclick="eliminarItem(${index})">✕</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+            totalDisplay.textContent = formatearMoneda(total);
+            actualizarBotonEnvio();
+        }
+
+        window.modificarCantidad = (index, cambio) => {
+            comandaActual[index].cantidad += cambio;
+            if (comandaActual[index].cantidad <= 0) comandaActual.splice(index, 1);
+            renderizarTicket();
+        };
+
+        window.eliminarItem = (index) => { comandaActual.splice(index, 1); renderizarTicket(); };
+
+        function actualizarBotonEnvio() {
+            const mesaId = document.getElementById('select-mesa').value;
+            document.getElementById('btn-enviar-comanda').disabled = !(mesaId && comandaActual.length > 0);
+        }
+
+        document.getElementById('btn-enviar-comanda').addEventListener('click', async () => {
+            const mesaId = document.getElementById('select-mesa').value;
+            if (!mesaId || comandaActual.length === 0) return;
+
+            const btn = document.getElementById('btn-enviar-comanda');
+            btn.disabled = true; btn.textContent = 'Enviando a Cocina...';
+
+            const cele = document.getElementById('input-celebracion').value.trim() || 'N/A';
+            const alergia = document.getElementById('input-alergias').value.trim() || 'N/A';
+            const notaChef = `[🎉 Celebración: ${cele}] | [⚠️ Alergias: ${alergia}]`;
+            const totalCalculado = comandaActual.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
+
+            const { data: comandaCreada, error } = await supabase.from('comandas').insert([{
+                mesa_id: mesaId, mesero_id: currentUser.id, estado: 'pendiente', total: totalCalculado, notas: notaChef
+            }]).select().single();
+
+            if (error) { alert("Error: " + error.message); btn.disabled = false; btn.textContent = '👨‍🍳 Enviar Comanda al Chef'; return; }
+
+            const detalles = comandaActual.map(item => ({ comanda_id: comandaCreada.id, plato_id: item.plato_id, cantidad: item.cantidad }));
+            await supabase.from('comanda_detalles').insert(detalles);
+
+            alert("¡Comanda enviada a Cocina!");
+            comandaActual = [];
+            document.getElementById('select-mesa').value = '';
+            renderizarTicket();
+            cargarComandasActivas();
+            btn.textContent = '👨‍🍳 Enviar Comanda al Chef';
+        });
+
+        async function cargarComandasActivas() {
+            const contenedor = document.getElementById('comandas-activas-container');
+            const { data: comandas } = await supabase.from('comandas').select('*, mesas(numero), comanda_detalles(*, platos(nombre, precio))').order('created_at', { ascending: false });
+
+            if (!comandas || comandas.length === 0) {
+                contenedor.innerHTML = '<p style="text-align: center; color: #888; padding: 20px;">No hay comandas registradas.</p>';
+                return;
+            }
+
+            contenedor.innerHTML = '';
+            comandas.forEach(com => {
+                const card = document.createElement('div');
+                card.className = 'comanda-card';
+                const numMesa = com.mesas ? `Mesa #${com.mesas.numero}` : 'Mesa N/A';
+                const itemsList = com.comanda_detalles ? com.comanda_detalles.map(d => `<li>${d.cantidad}x ${d.platos ? d.platos.nombre : 'Plato'}</li>`).join('') : '';
+                const notasChefDisplay = com.notas ? `<div class="comanda-obs-tag">${com.notas}</div>` : '';
+                
+                let accionesHTML = '';
+                const estadoLower = (com.estado || 'pendiente').toLowerCase();
+
+                if (estadoLower === 'pendiente') {
+                    accionesHTML += `<button class="btn-card-action btn-card-cancel" onclick="cancelarComanda('${com.id}')">🚫 Cancelar</button>`;
+                } else if (estadoLower === 'listo') {
+                    accionesHTML += `<button class="btn-card-action btn-card-deliver" onclick="entregarComanda('${com.id}')">✅ Marcar Entregado</button>`;
+                } else if (estadoLower === 'entregado') {
+                    const detallesJson = encodeURIComponent(JSON.stringify(com.comanda_detalles || []));
+                    accionesHTML += `<button class="btn-card-action" style="background-color: #28a745; color: white;" onclick="abrirModalFactura('${com.id}', ${com.total}, ${com.mesas ? com.mesas.numero : 0}, '${detallesJson}')">🧾 Cobrar y Facturar</button>`;
+                }
+
+                accionesHTML += `<button class="btn-card-action" style="background-color: #dc3545; color: white; margin-top: 5px;" onclick="eliminarComandaCompleta('${com.id}')">🗑️ Eliminar</button>`;
+
+                card.innerHTML = `
+                    <div class="comanda-header"><span class="comanda-mesa">${numMesa}</span><span class="status-badge ${estadoLower}">${estadoLower}</span></div>
+                    ${notasChefDisplay}
+                    <ul class="comanda-items">${itemsList}</ul>
+                    <div class="comanda-footer">
+                        <span class="comanda-total">Total: ${formatearMoneda(com.total || 0)}</span>
+                        <div class="comanda-actions" style="display:flex; flex-direction:column; gap:5px;">${accionesHTML}</div>
+                    </div>
+                `;
+                contenedor.appendChild(card);
+            });
+        }
+
+        window.cancelarComanda = async (comandaId) => {
+            if (!confirm("¿Cancelar comanda?")) return;
+            await supabase.from('comandas').update({ estado: 'cancelado' }).eq('id', comandaId);
+            cargarComandasActivas();
+        };
+
+        window.entregarComanda = async (comandaId) => {
+            await supabase.from('comandas').update({ estado: 'entregado' }).eq('id', comandaId);
+            alert("¡Pedido entregado a la mesa!");
+            cargarComandasActivas();
+        };
+
+        window.cambiarMetodoPago = () => {
+            const metodo = document.getElementById('metodo-pago').value;
+            const groupRef = document.getElementById('group-ref-pago');
+            const labelRef = document.getElementById('label-ref-pago');
+            const inputRef = document.getElementById('factura-ref-pago');
+
+            if (metodo === 'Tarjeta de Crédito/Débito') {
+                groupRef.style.display = 'block';
+                labelRef.textContent = 'Nº de Aprobación / Voucher';
+                inputRef.placeholder = 'Ej: 482901';
+            } else if (metodo === 'Transferencia Bancaria') {
+                groupRef.style.display = 'block';
+                labelRef.textContent = 'Nº de Comprobante / Transacción';
+                inputRef.placeholder = 'Ej: M1029384';
+            } else {
+                groupRef.style.display = 'none';
+                inputRef.value = '';
+            }
+        };
+
+        window.abrirModalFactura = (id, total, mesaNum, detallesEnc) => {
+            comandaSeleccionadaId = id;
+            comandaSeleccionadaTotal = total;
+            mesaSeleccionadaNum = mesaNum;
+            comandaSeleccionadaDetalles = JSON.parse(decodeURIComponent(detallesEnc));
+            document.getElementById('modal-factura').style.display = 'flex';
+            cambiarMetodoPago(); // Ajustar el estado inicial del campo dinámico
+        };
+
+        window.cerrarModalFactura = () => { document.getElementById('modal-factura').style.display = 'none'; };
+
+        window.procesarFacturacion = async () => {
+            const nombreCliente = document.getElementById('factura-nombre').value.trim() || 'Cliente Ocasional';
+            const docCliente = document.getElementById('factura-doc').value.trim() || 'N/A';
+            const correoCliente = document.getElementById('factura-correo').value.trim() || 'N/A';
+            const metodoPago = document.getElementById('metodo-pago').value;
+            const refPago = document.getElementById('factura-ref-pago').value.trim() || 'N/A';
+
+            // Validación: Si es tarjeta o transferencia, se exige ingresar el número de referencia/comprobante
+            if (metodoPago !== 'Efectivo' && (refPago === '' || refPago === 'N/A')) {
+                alert(`⚠️ Por favor ingrese el número de ${metodoPago === 'Tarjeta de Crédito/Débito' ? 'Aprobación/Voucher' : 'Comprobante de Transacción'}.`);
+                return;
+            }
+
+            const subtotalCalc = Math.round(comandaSeleccionadaTotal / 1.19);
+            const impuestoCalc = comandaSeleccionadaTotal - subtotalCalc;
+
+            // 1. Guardar en Supabase
+            const { error } = await supabase.from('facturas').insert([{
+                comanda_id: comandaSeleccionadaId,
+                mesa_numero: mesaSeleccionadaNum,
+                mesero_nombre: nombreMeseroActual,
+                cliente_nombre: nombreCliente,
+                cliente_documento: docCliente,
+                cliente_correo: correoCliente,
+                metodo_pago: metodoPago,
+                referencia_pago: refPago,
+                subtotal: subtotalCalc,
+                impuesto: impuestoCalc,
+                total: comandaSeleccionadaTotal
+            }]);
+
+            if (error) { alert("Error al guardar factura: " + error.message); return; }
+
+            await supabase.from('comandas').update({ estado: 'pagado' }).eq('id', comandaSeleccionadaId);
+            cerrarModalFactura();
+
+            // 2. Construir el Ticket Visual en Pantalla con el comprobante incluido
+            const fechaActual = new Date().toLocaleString();
+            let itemsHtml = `<table class="ticket-items"><tr><th>Cant/Plato</th><th style="text-align:right;">Subtotal</th></tr>`;
+            
+            comandaSeleccionadaDetalles.forEach(d => {
+                const nombrePlato = d.platos ? d.platos.name || d.platos.nombre : 'Plato';
+                const precioPlato = d.platos ? d.platos.precio : 0;
+                itemsHtml += `<tr><td>${d.cantidad}x ${nombrePlato}</td><td style="text-align:right;">${formatearMoneda(d.cantidad * precioPlato)}</td></tr>`;
+            });
+            itemsHtml += `</table>`;
+
+            const refDisplay = metodoPago !== 'Efectivo' ? `<p><b>Ref/Aprobación:</b> ${refPago}</p>` : '';
+
+            const contenidoTicket = `
+                <p><b>Fecha:</b> ${fechaActual}</p>
+                <p><b>Mesero:</b> ${nombreMeseroActual}</p>
+                <p><b>Mesa:</b> #${mesaSeleccionadaNum}</p>
+                <p><b>Cliente:</b> ${nombreCliente}</p>
+                <p><b>CC/NIT:</b> ${docCliente}</p>
+                <p><b>Correo:</b> ${correoCliente}</p>
+                <hr>
+                ${itemsHtml}
+                <div class="ticket-totals">
+                    <p>Subtotal: ${formatearMoneda(subtotalCalc)}</p>
+                    <p>IVA (19%): ${formatearMoneda(impuestoCalc)}</p>
+                    <p><b>TOTAL PAGADO: ${formatearMoneda(comandaSeleccionadaTotal)}</b></p>
+                    <p><b>Método de Pago:</b> ${metodoPago}</p>
+                    ${refDisplay}
+                </div>
+            `;
+
+            document.getElementById('ticket-detalle-contenido').innerHTML = contenidoTicket;
+            document.getElementById('modal-ticket').style.display = 'flex';
+        };
+
+        window.cerrarTicketVisual = () => {
+            document.getElementById('modal-ticket').style.display = 'none';
+            cargarComandasActivas();
+        };
+
+        window.eliminarComandaCompleta = async (comandaId) => {
+            if (!confirm("¿Eliminar comanda?")) return;
+            await supabase.from('comanda_detalles').delete().eq('comanda_id', comandaId);
+            await supabase.from('comandas').delete().eq('id', comandaId);
+            cargarComandasActivas();
+        };
+    </script>
+</body>
+</html>

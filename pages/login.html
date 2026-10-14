@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso - Restaurante Censa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Enlace a la hoja de estilos externa -->
+    <link rel="stylesheet" href="../assets/css/login.css">
+
+</head>
+<body>
+
+    <!-- Encabezado con Botón Volver -->
+    <header class="header">
+        <div class="header-container">
+            <a href="../index.html" class="logo">
+                <span class="star">✦</span> Censa Gourmet
+            </a>
+            <a href="../index.html" class="btn-volver">
+                ← Volver al inicio
+            </a>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        <div class="container">
+            <div class="form-card-wrapper">
+
+                <!-- Selector de Pestañas (Ventana interactiva) -->
+                <div class="tab-container">
+                    <button type="button" class="tab-btn active" data-target="panel-login">Iniciar Sesión</button>
+                    <button type="button" class="tab-btn" data-target="panel-register">Registrarse</button>
+                </div>
+
+                <!-- Ventana 1: Iniciar Sesión -->
+                <div id="panel-login" class="card card-panel active">
+                    <h2>Iniciar Sesión</h2>
+                    <form id="login-form" onsubmit="return false;">
+                        <div class="form-group">
+                            <label for="login-email">Correo Electrónico</label>
+                            <input type="email" id="login-email" placeholder="tu@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Contraseña</label>
+                            <input type="password" id="login-password" placeholder="••••••••" required>
+                        </div>
+                        <button type="button" id="btn-login">Entrar</button>
+                    </form>
+
+                    <p class="switch-tab-link">
+                        ¿No tienes una cuenta aún? <a onclick="switchTab('panel-register')">Regístrate aquí</a>
+                    </p>
+
+                    <!-- Sección de Relleno / Beneficios para enriquecer el panel -->
+                    <div class="login-welcome-info">
+                        <p><strong>✦ Experiencia Censa Gourmet:</strong></p>
+                        <ul>
+                            <li><span>✦</span> Reservas exclusivas de mesa en tiempo real</li>
+                            <li><span>✦</span> Pedidos rápidos desde la mesa</li>
+                            <li><span>✦</span> Descuentos y beneficios de cliente frecuente</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Ventana 2: Registrarse -->
+                <div id="panel-register" class="card card-panel">
+                    <h2>Registrarse</h2>
+                    <form id="register-form" onsubmit="return false;">
+                        <div class="form-group">
+                            <label for="register-name">Nombre Completo</label>
+                            <input type="text" id="register-name" placeholder="Tu nombre completo" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-email">Correo Electrónico</label>
+                            <input type="email" id="register-email" placeholder="tu@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-phone">Teléfono / Celular</label>
+                            <!-- Restricción de solo números en tiempo real -->
+                            <input type="tel" id="register-phone" placeholder="Ej: 3001234567" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-age">Edad</label>
+                            <input type="number" id="register-age" placeholder="Ej: 20" min="18" max="120" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password">Contraseña</label>
+                            <input type="password" id="register-password" placeholder="Mínimo 6 caracteres" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-confirm-password">Confirmar Contraseña</label>
+                            <input type="password" id="register-confirm-password" placeholder="Repite tu contraseña" required>
+                        </div>
+                        <button type="button" id="btn-register">Crear cuenta</button>
+                    </form>
+
+                    <p class="switch-tab-link">
+                        ¿Ya tienes una cuenta? <a onclick="switchTab('panel-login')">Inicia sesión aquí</a>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Elegante -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p class="footer-logo">✦ Censa Gourmet</p>
+            <p>© 2026 Censa Gourmet. Todos los derechos reservados. Alta Cocina & Experiencia Gastronómica.</p>
+        </div>
+    </footer>
+
+    <!-- Contenedor de notificaciones -->
+    <div id="notificacion"></div>
+
+    <!-- Librería Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // Función global para cambiar pestañas con los enlaces del texto
+        function switchTab(targetId) {
+            const btnTarget = document.querySelector(`.tab-btn[data-target="${targetId}"]`);
+            if (btnTarget) btnTarget.click();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+
+            if (typeof window.supabase === 'undefined') {
+                mostrarToast('error', 'Error de conexión', 'Tu navegador está bloqueando la librería. Desactiva el bloqueador.');
+                return;
+            }
+
+            const supabaseUrl = 'https://xapucgyfhswgudkraeuz.supabase.co';
+            const supabaseKey = 'sb_publishable_tL2gtRtP68PEu0A86Qg2_Q_EeysDviw';
+            const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+            // ============ LÓGICA DE PESTAÑAS (VENTANA) ============
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const cardPanels = document.querySelectorAll('.card-panel');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const target = btn.dataset.target;
+                    
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    cardPanels.forEach(p => p.classList.remove('active'));
+                    
+                    btn.classList.add('active');
+                    document.getElementById(target).classList.add('active');
+                });
+            });
+
+            // ============ FUNCIÓN DE NOTIFICACIONES ============
+            function mostrarToast(tipo, titulo, mensaje, duracion = 4000) {
+                const contenedor = document.getElementById('notificacion');
+                const toast = document.createElement('div');
+                toast.className = `toast ${tipo}`;
+
+                const iconos = { exito: '✦', error: '✕', info: '◈' };
+
+                toast.innerHTML = `
+                    <div class="icono-toast">${iconos[tipo] || '✦'}</div>
+                    <div class="texto-toast">
+                        <span class="titulo-toast">${titulo}</span>
+                        ${mensaje}
+                    </div>
+                `;
+
+                contenedor.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.classList.add('saliendo');
+                    setTimeout(() => toast.remove(), 400);
+                }, duracion);
+            }
+
+            // ============ REGISTRO CON VALIDACIONES ============
+            document.getElementById('btn-register').addEventListener('click', async () => {
+                const btn = document.getElementById('btn-register');
+                try {
+                    const nombre = document.getElementById('register-name').value.trim();
+                    const email = document.getElementById('register-email').value.trim();
+                    const telefono = document.getElementById('register-phone').value.trim();
+                    const edadVal = document.getElementById('register-age').value.trim();
+                    const password = document.getElementById('register-password').value;
+                    const confirmPassword = document.getElementById('register-confirm-password').value;
+
+                    // 1. Validar campos incompletos
+                    if (!nombre || !email || !telefono || !edadVal || !password || !confirmPassword) {
+                        mostrarToast('error', 'Campos incompletos', 'Por favor llena todos los campos del formulario.');
+                        return;
+                    }
+
+                    // 2. Validar que el teléfono sea estrictamente numérico y de longitud adecuada
+                    const regexTelefono = /^[0-9]{7,15}$/;
+                    if (!regexTelefono.test(telefono)) {
+                        mostrarToast('error', 'Teléfono inválido', 'El campo teléfono debe contener solo números (mínimo 7 dígitos).');
+                        return;
+                    }
+
+                    // 3. Validar mayoría de edad
+                    const edad = parseInt(edadVal, 10);
+                    if (isNaN(edad) || edad < 18) {
+                        mostrarToast('error', 'Acceso denegado', 'Debes ser mayor de edad (mínimo 18 años) para registrarte.');
+                        return;
+                    }
+
+                    // 4. Validar contraseñas
+                    if (password !== confirmPassword) {
+                        mostrarToast('error', 'Contraseñas no coinciden', 'La contraseña y la confirmación deben ser iguales.');
+                        return;
+                    }
+
+                    if (password.length < 6) {
+                        mostrarToast('error', 'Contraseña muy corta', 'La contraseña debe tener al menos 6 caracteres.');
+                        return;
+                    }
+
+                    btn.disabled = true;
+                    btn.textContent = 'Creando cuenta...';
+
+                    // 5. Registrar en Autenticación de Supabase
+                    const { data: authData, error: authError } = await supabase.auth.signUp({
+                        email: email,
+                        password: password,
+                    });
+
+                    if (authError) throw authError;
+
+                    // 6. Insertar datos adicionales en la tabla 'usuarios'
+                    const { error: dbError } = await supabase
+                        .from('usuarios')
+                        .insert([{
+                            id: authData.user.id,
+                            nombre: nombre,
+                            email: email,
+                            telefono: telefono,
+                            edad: edad,
+                            rol: 'cliente'
+                        }]);
+
+                    if (dbError) throw dbError;
+
+                    // 7. Confirmación de registro exitoso
+                    if (authData.session) {
+                        localStorage.setItem('nombreUsuario', nombre);
+                        localStorage.setItem('rolUsuario', 'cliente');
+
+                        mostrarToast('exito', '¡Bienvenido!', 'Cuenta creada exitosamente.', 2500);
+
+                        setTimeout(() => {
+                            window.location.href = '../index.html';
+                        }, 1800);
+                    } else {
+                        mostrarToast('info', 'Revisa tu correo', 'Te hemos enviado un enlace para confirmar tu cuenta.', 6000);
+                        btn.disabled = false;
+                        btn.textContent = 'Crear cuenta';
+                    }
+
+                } catch (err) {
+                    mostrarToast('error', 'Error al registrar', err.message, 5000);
+                    btn.disabled = false;
+                    btn.textContent = 'Crear cuenta';
+                }
+            });
+
+            // ============ LOGIN CON ROLES ============
+            document.getElementById('btn-login').addEventListener('click', async () => {
+                const btn = document.getElementById('btn-login');
+                try {
+                    const email = document.getElementById('login-email').value.trim();
+                    const password = document.getElementById('login-password').value;
+
+                    if (!email || !password) {
+                        mostrarToast('error', 'Campos vacíos', 'Ingresa tu correo y contraseña.');
+                        return;
+                    }
+
+                    btn.disabled = true;
+                    btn.textContent = 'Entrando...';
+
+                    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+                        email,
+                        password
+                    });
+
+                    if (authError) throw authError;
+
+                    const { data: userData, error: userError } = await supabase
+                        .from('usuarios')
+                        .select('rol, nombre')
+                        .eq('id', authData.user.id)
+                        .single();
+
+                    if (userError) throw userError;
+
+                    localStorage.setItem('nombreUsuario', userData.nombre);
+                    localStorage.setItem('rolUsuario', userData.rol);
+
+                    mostrarToast('exito', `¡Bienvenido, ${userData.nombre}!`, 'Redirigiendo a tu panel...', 2500);
+
+                    setTimeout(() => {
+                        if (userData.rol === 'admin') {
+                            window.location.href = 'admin.html';
+                        } else if (userData.rol === 'mesero') {
+                            window.location.href = 'mesero.html';
+                        } else if (userData.rol === 'chef') {
+                            window.location.href = 'chef.html';
+                        } else {
+                            window.location.href = 'menu.html';
+                        }
+                    }, 1500);
+
+                } catch (err) {
+                    mostrarToast('error', 'Error al entrar', err.message, 5000);
+                    btn.disabled = false;
+                    btn.textContent = 'Entrar';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
